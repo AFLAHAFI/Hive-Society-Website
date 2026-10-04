@@ -1,5 +1,5 @@
 # Build stage: run the static export (site links rendered, assets fingerprinted).
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
@@ -11,7 +11,7 @@ RUN node scripts/export.mts
 
 # Runtime stage: the same server, serving the exported dist/ (so production gets fingerprinted,
 # long-cached assets exactly like the Cloudflare Pages deploy).
-FROM node:24-alpine
+FROM node:26-alpine
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY --from=build /app/node_modules ./node_modules
