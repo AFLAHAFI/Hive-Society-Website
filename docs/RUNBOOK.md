@@ -17,7 +17,7 @@ Everything needed to develop, check, deploy, and maintain the site, written so s
 
 | Tool | Version | Install | Check |
 |---|---|---|---|
-| Node.js (includes npm) | 24+ | [nvm](https://github.com/nvm-sh/nvm): `nvm install 24` | `node --version` |
+| Node.js (includes npm) | 26 (24+ works) | [nvm](https://github.com/nvm-sh/nvm): `nvm install` (reads `.nvmrc`) | `node --version` |
 | git | any recent | [git-scm.com](https://git-scm.com/downloads) | `git --version` |
 
 **Optional**, only for the task listed:
@@ -39,7 +39,7 @@ npm start       # → http://localhost:8080
 
 Use `npm ci`, not `npm install`, unless you're deliberately adding or upgrading a dependency: `npm install` can silently change `package-lock.json`.
 
-There's no build step for development. The code is TypeScript (`.mts` files), and Node 24 runs it directly by ignoring the type annotations. That's why type checking is a separate command ([§3](#3-npm-scripts)).
+There's no build step for development. The code is TypeScript (`.mts` files), and Node (24 and later) runs it directly by ignoring the type annotations. That's why type checking is a separate command ([§3](#3-npm-scripts)).
 
 ## 2. How it fits together
 

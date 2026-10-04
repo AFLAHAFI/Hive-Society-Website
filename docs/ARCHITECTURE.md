@@ -9,7 +9,7 @@ How the site is built and why. For contributors. Commands and procedures are in 
 | Layer | Today | Planned |
 |---|---|---|
 | Pages | Hand-maintained HTML in `public/` (the original Mobirise site, cleaned up) | **[Astro](https://astro.build/)**, with pages and members generated from data |
-| Language / runtime | TypeScript on Node 24 (native type stripping, no build step for tooling) | Same |
+| Language / runtime | TypeScript on Node 26 (native type stripping, no build step for tooling) | Same |
 | Content | Settings and colors in YAML (`content/`), validated in CI | Members, teams, and events as schema-validated YAML/Markdown, edited through **[Sveltia CMS](https://github.com/sveltia/sveltia-cms)** |
 | Hosting | Static export on **Cloudflare Workers** (static assets, no Worker code; `wrangler.jsonc`); the local server mimics it | Same; optional **Kubernetes** path (k3s + Kustomize + Cloudflare Tunnel), see [CONTAINERIZATION.md](CONTAINERIZATION.md) |
 | CI | GitHub Actions: lint, HTML validation, typecheck, tests, manifest validation, container smoke test, PR-title check, form drift check | Release automation from Conventional Commits (release-please) |
