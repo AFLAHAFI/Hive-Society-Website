@@ -303,6 +303,7 @@ Written with Node's built-in test runner (`node:test`, no extra framework). All 
 | **Kubernetes manifests** | Checks the (optional) Kubernetes configuration is valid; see [CONTAINERIZATION.md](CONTAINERIZATION.md) | Same | Yes |
 | **Container image** | Builds the (optional) container and confirms it serves pages; see [CONTAINERIZATION.md](CONTAINERIZATION.md) | Same | Yes |
 | **Conventional PR title** | PR title starts with an allowed type ([§5](#5-versions-and-releases)) | When a PR is opened or edited | Yes |
+| **Label by PR type** | Labels the PR `type: <type>` from its title, plus `breaking` for `type!:` or a `BREAKING CHANGE:` line, so PRs can be filtered by kind: search `label:"type: content"`. Fixes itself when the title is edited | When a PR is opened or edited | No |
 | **Live form matches site settings** | `npm run check:form` against the real Google Form | Daily, on demand, and on PRs that change form settings | No: it depends on Google being reachable |
 | Dependabot | Opens PRs that update dependencies; they go through the checks above | Weekly | n/a |
 

@@ -121,6 +121,7 @@ Prefer an existing, maintained package over our own code where it fits. Versions
 - [ ] Create the Cloudflare Tunnel and the `cloudflared-token` Secret.
 
 ## Done
+- 2026-10-04: PRs labeled automatically by type (`type: content`, `type: fix`, …, plus `breaking`) from the title, reading the allowed types from `pr-title.yml`; filter with `label:"type: …"`.
 - 2026-10-04: Node 26 everywhere: `.nvmrc`, CI (now reads `.nvmrc` via `node-version-file`), Cloudflare builds, and the container (#11). `engines` stays `>=24`, the oldest version that runs `.mts` without flags.
 - 2026-10-04: Ruleset **Protect main** (active, no bypass): PR required (0 approvals until the content-PR policy is decided), squash-only, required checks Lint, typecheck, test / Kubernetes manifests / Container image / Conventional PR title, no force-push or deletion. Repo settings: squash commit title = PR title; head branches deleted automatically after merge.
 - 2026-10-04: GHCR owner set in the prod overlay. PR previews confirmed working (Workers Builds comments the link on each PR). Dependabot holds TypeScript majors: #4 bundled TypeScript 7, which `typescript-eslint` doesn't support yet, so `npm ci` failed with ERESOLVE (as #2 had). Note: #7 was squash-merged after #8 landed on its branch, so `main` records the Workers/SEO work under that `docs:` commit; release automation isn't live yet, so no version was skipped.

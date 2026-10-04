@@ -1,0 +1,60 @@
+# Labels every PR with its Conventional Commit type ("type: content", "type: fix", ...) and "breaking"
+# for `type!:` titles or a BREAKING CHANGE: line in the description, so PRs can be filtered by kind
+# (e.g. `label:"type: content"`). Labels follow the title: edit the title and they're corrected.
+# Allowed types are read from pr-title.yml, the one list. Never add labels that record roster removals
+# (AGENTS.md → Roster privacy).
+name: PR labels
+
+on:
+  # _target: labeling needs a write token, also for PRs from forks. Safe because only the base branch is
+  # checked out (for pr-title.yml); the PR's own code never runs.
+  pull_request_target:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  label:
+    name: Label by PR type
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github/workflows/pr-title.yml
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('node:fs');
+            const block = /types: \|\n((?:\s+\w+\n)+)/.exec(fs.readFileSync('.github/workflows/pr-title.yml', 'utf8'))?.[1] ?? '';
+            const types = block.split('\n').map((t) => t.trim()).filter(Boolean);
+            if (types.length === 0) throw new Error('Could not read the types list from pr-title.yml');
+
+            const pr = context.payload.pull_request;
+            const match = /^(\w+)(?:\([^)]*\))?(!)?:/.exec(pr.title);
+            const want = new Set();
+            if (match && types.includes(match[1])) want.add(`type: ${match[1]}`);
+            if (match?.[2] || /^BREAKING CHANGE:/m.test(pr.body ?? '')) want.add('breaking');
+
+            const managed = (name) => name.startsWith('type: ') || name === 'breaking';
+            const issue = { owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number };
+            for (const { name } of pr.labels) {
+              if (managed(name) && !want.has(name)) await github.rest.issues.removeLabel({ ...issue, name });
+            }
+            for (const name of want) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: issue.owner, repo: issue.repo, name,
+                  color: name === 'breaking' ? 'b60205' : 'c5def5',
+                  description: name === 'breaking' ? 'Breaking change: major release' : 'PR type, set from the title',
+                });
+              } catch (err) {
+                if (err.status !== 422) throw err; // 422: label already exists
+              }
+            }
+            if (want.size > 0) await github.rest.issues.addLabels({ ...issue, labels: [...want] });
+            core.info(`Labels: ${[...want].join(', ') || '(none: title has no recognised type)'}`);

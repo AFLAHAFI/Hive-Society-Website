@@ -61,7 +61,7 @@ wrangler.jsonc         Cloudflare deploy config: Workers static assets serving d
 .nvmrc                 Node version (26) for nvm, CI (`node-version-file`), and Cloudflare's build machine; the Dockerfile's `node:26-alpine` must match
 scripts/validate-theme.mts   CLI used by CI
 tests/*.test.mts       node:test suites (server, theme, local link/asset check)
-.github/               ci.yml (required checks), pr-title.yml, dependabot.yml
+.github/               ci.yml (required checks), pr-title.yml (allowed PR types: the one list), pr-labels.yml (labels PRs by type from it), dependabot.yml
 kube/base, kube/overlays/{local,prod}   Kustomize; prod = k3s + Cloudflare Tunnel
 docs/                  RUNBOOK.md (commands/procedures), ARCHITECTURE.md (stack, rationale, theme rules, caching), PROJECT_LOG.md (decisions + TODOs), site-audit.md
 ```
