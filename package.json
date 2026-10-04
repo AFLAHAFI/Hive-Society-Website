@@ -24,14 +24,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.3",
     "colorjs.io": "^0.7.1",
     "eslint": "^10.11.0",
-    "html-validate": "^11.16.0",
+    "html-validate": "^11.16.1",
     "image-size": "^2.0.4",
     "jiti": "^2.7.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.70.1"
+    "typescript-eslint": "^8.71.0"
   },
   "license": "ISC"
 }
