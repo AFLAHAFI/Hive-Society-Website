@@ -26,16 +26,16 @@ describe('site server', () => {
     assert.equal(res.headers.get('cache-control'), 'no-cache');
   });
 
-  it('serves pages without the .html extension, like Cloudflare Pages', async () => {
+  it('serves pages without the .html extension, like Cloudflare', async () => {
     const res = await get('/members');
     assert.equal(res.status, 200);
     assert.match(await res.text(), /<title>[^<]*Members/);
   });
 
-  it('redirects .html and trailing-slash URLs to the clean URL, like Cloudflare Pages', async () => {
+  it('redirects .html and trailing-slash URLs to the clean URL, like Cloudflare', async () => {
     for (const [from, to] of [['/members.html', '/members'], ['/index.html', '/'], ['/index', '/'], ['/members/', '/members'], ['/members.html?x=1', '/members?x=1']]) {
       const res = await get(from);
-      assert.equal(res.status, 308, from);
+      assert.equal(res.status, 307, from);
       assert.equal(res.headers.get('location'), to, from);
     }
   });
@@ -46,7 +46,7 @@ describe('site server', () => {
     assert.equal(res.headers.get('location'), '/mailing-list');
   });
 
-  it("never serves Pages' own config files, however the path is spelled", async () => {
+  it("never serves Cloudflare's config files, however the path is spelled", async () => {
     for (const path of ['/_redirects', '/_headers', '/%5Fredirects', '/assets/../_headers']) {
       const res = await get(path);
       assert.equal(res.status, 404, path);

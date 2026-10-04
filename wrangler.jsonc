@@ -1,0 +1,24 @@
+// Cloudflare Workers deploy config. The site is static: Cloudflare serves dist/ (built by
+// `npm run export`) directly, with no Worker code. Setup and commands: docs/RUNBOOK.md §7.
+{
+  "name": "hive-society-website",
+  "compatibility_date": "2026-10-01",
+  // Build dist/ before every deploy and preview, whatever the dashboard's build command says. Cloudflare
+  // installs dependencies first (npm ci); locally, run `npm ci` once yourself.
+  "build": { "command": "npm run export" },
+  // The live site exists only at hivesocietyimprov.com: no public copy at hive-society-website.<account>.workers.dev.
+  "workers_dev": false,
+  // PR builds run `npx wrangler preview` (Worker Previews, open beta), which needs this block. Empty: a
+  // static site has no bindings or variables for previews to override.
+  "previews": {},
+  // Fallback preview links for `npx wrangler versions upload` (wrangler leaves them off unless asked).
+  // Both kinds are limited to officers by Cloudflare Access; see docs/RUNBOOK.md §8.
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist",
+    // /about.html → /about, /about/ → /about: the clean URLs the local server mimics.
+    "html_handling": "auto-trailing-slash",
+    // Unknown URLs get dist/404.html with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}

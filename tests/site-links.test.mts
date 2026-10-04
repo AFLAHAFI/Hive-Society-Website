@@ -2,7 +2,7 @@
  * Every local href/src in the site's pages must resolve to a real file, using the same
  * resolution rules as the server (extensionless pages, index.html). Catches broken images
  * and links after renames, cleanups, or CMS media changes. Links between pages use clean URLs
- * (`about`, not `about.html`), because Cloudflare Pages redirects .html URLs to the clean form.
+ * (`about`, not `about.html`), because Cloudflare redirects .html URLs to the clean form.
  */
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';

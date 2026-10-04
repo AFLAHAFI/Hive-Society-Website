@@ -13,7 +13,7 @@ Guidance for AI coding agents working in this repo. Humans: see [README.md](READ
 
 ## Project
 
-Website for Hive Society Improv (UIUC), https://hivesocietyimprov.com. Today it's the original Mobirise export in `public/`, served by a Node static server or exported to static files. **Decided: migrating to Astro** (content collections for members/teams/events, static output, islands for interactivity; see README → Architecture). Until the migration lands, keep changes to `public/` minimal; new page features belong in the Astro version. Read `docs/PROJECT_LOG.md` for current decisions and open work, and `docs/site-audit.md` for the content inventory and plans.
+Website for Hive Society Improv (UIUC), https://hivesocietyimprov.com. Today it's the original Mobirise site in `public/` (cleaned up), served by a Node static server or exported to static files. **Decided: migrating to Astro** (content collections for members/teams/events, static output, islands for interactivity; see `docs/ARCHITECTURE.md`). Until the migration lands, keep changes to `public/` minimal; new page features belong in the Astro version. Read `docs/PROJECT_LOG.md` for current decisions and open work, and `docs/site-audit.md` for the content inventory and plans.
 
 ## Commands
 
@@ -48,20 +48,22 @@ public/assets/vendor/  third-party libraries, unmodified: Bootstrap 5.3.8 (npm d
 public/assets/js/      first-party scripts (small, page-specific: spin-on-click.js)
 public/404.html        served for unknown URLs (root-absolute links: it's served at any depth)
 public/assets/images/  images, one folder per class (members/, teams/; see image-limits)
-src/app.mts            static site handler mimicking Cloudflare Pages: clean URLs, _redirects, 404.html, hides Pages config files, /healthz
+src/app.mts            static site handler mimicking Cloudflare (Workers static assets): clean URLs (307), _redirects, 404.html, hides config files, /healthz
 src/server.mts         entry point: env config, listen, SIGTERM
 src/theme.mts          theme.yaml loading, validation, CSS-variable flattening
 src/site.mts           site.yaml loading/validation; named links (calendar-google, calendar-webcal, calendar-ics)
 src/contrast.mts       WCAG contrast pairs + waivers for theme.yaml (run by validate:theme)
 src/images.mts         image policy (site.yaml → image-limits): per-class limits, exceptions, duplicates, folder naming rules
 src/forms.mts          Google Form structure parser + drift comparison
-src/render.mts         shared HTML transform (server + export): fills data-site-link hrefs; export adds ?v=<hash>
+src/render.mts         shared HTML transform (server + export): fills data-site-link hrefs; export adds ?v=<hash>, <link rel="canonical">, and og:title/description/url from the page's own title and description (never hand-write those)
 scripts/export.mts     public/ → dist/ + robots.txt, sitemap.xml, _headers
+wrangler.jsonc         Cloudflare deploy config: Workers static assets serving dist/ (no Worker code)
+.nvmrc                 Node version for local nvm and Cloudflare's build machine
 scripts/validate-theme.mts   CLI used by CI
 tests/*.test.mts       node:test suites (server, theme, local link/asset check)
 .github/               ci.yml (required checks), pr-title.yml, dependabot.yml
 kube/base, kube/overlays/{local,prod}   Kustomize; prod = k3s + Cloudflare Tunnel
-docs/                  RUNBOOK.md (commands/procedures), PROJECT_LOG.md (decisions + TODOs), site-audit.md
+docs/                  RUNBOOK.md (commands/procedures), ARCHITECTURE.md (stack, rationale, theme rules, caching), PROJECT_LOG.md (decisions + TODOs), site-audit.md
 ```
 
 ## Conventions
@@ -87,7 +89,8 @@ docs/                  RUNBOOK.md (commands/procedures), PROJECT_LOG.md (decisio
 - Caching: the export fingerprints every `assets/…` reference in HTML (`?v=<sha256 prefix>`), and `/assets/*` is served `immutable` for a year. Files referenced only from CSS (fonts) aren't fingerprinted, so never modify one in place; add a new filename. The dev server revalidates un-hashed files, so a normal reload shows edits.
 - `public/assets/vendor/` holds third-party code exactly as published. Never edit it; to update or patch, replace the whole library folder (and note the version in Layout above) or override from `css/overrides.css`. First-party code never goes in `vendor/`, and vendored code never goes anywhere else.
 - **Page structure (accessibility, enforced by `lint:html`):** content between the nav section and the footer lives in `<main id="main">`; keep exactly one `<h1>` per page and never skip heading levels (page title h1 → section headings h2 → card/person names h3). Text that isn't a heading (class years, quips, subtitles) is `<p>`/`<div>`, not `<h5>`/`<h6>`. Section ids that pages link to are readable (`#alumni`); don't reintroduce builder-generated ids in links.
-- **Links between pages use clean URLs** (`about`, `./` for home, `members#alumni`), never `about.html`: Pages redirects `.html` URLs anyway, and `tests/site-links.test.mts` rejects them. The local server mirrors Pages (clean URLs, `_redirects`, `404.html`), so test redirects and 404s with `npm start`.
+- **Titles and descriptions:** every page's `<title>` (10-60 characters) and meta description (50-160) are unique; `tests/seo.test.mts` checks them on the real export. Link previews (`og:`) are generated from them, so edit only the title and description.
+- **Links between pages use clean URLs** (`about`, `./` for home, `members#alumni`), never `about.html`: Cloudflare redirects `.html` URLs anyway, and `tests/site-links.test.mts` rejects them. The local server mirrors Cloudflare (clean URLs, `_redirects`, `404.html`), so test redirects and 404s with `npm start`; for exact behavior, `npx wrangler dev` (RUNBOOK §7).
 - **Page renames:** add the old URL (with and without `.html`) to `public/_redirects` so links elsewhere keep working; `tests/redirects.test.mts` checks targets exist.
 - **Members page order:** the Executive Board is sorted by position rank (Co-President, Vice President, Secretary, Treasurer, Membership Director; the `RANK` list in the test), then seniority. Active Members and Alumni are sorted by seniority: graduation year (earliest first), then last name, then first name; members without a year yet (`Class of '??`) go last. Enforced by `tests/members-order.test.mts`. The Executive Board rows' layout modifiers (image side; extra space after the last row) belong to the position, not the person: when the order changes, move people between rows, don't move the rows.
 - **Member portraits:** `public/assets/images/members/<firstname-lastname>.jpg` (lowercase, hyphens, no nicknames/apostrophes/accents, `-2` for a duplicate name), `alt` = full name. Enforced by `check:images`. The base name is the member's future data ID. A member without a photo yet points at the shared `assets/images/portrait-placeholder.jpg` (never copy it per person; duplicate files fail the check).
@@ -98,7 +101,7 @@ docs/                  RUNBOOK.md (commands/procedures), PROJECT_LOG.md (decisio
 ### Commits, PRs, and versioning
 `main` is branch-protected: **all changes go through a PR on a branch**, required CI checks must pass before merge, and PRs are squash-merged. Never commit or push to `main` directly, and never bypass or weaken protection or required checks to get a change in. If a check is wrong, fix the check in its own PR.
 
-Conventional Commits; the PR title becomes the squash commit message and is checked by `.github/workflows/pr-title.yml`. If you change the allowed types, update that file, this table, and README → Versioning together. The version is bumped automatically. **Never edit `version` in `package.json` by hand.**
+Conventional Commits; the PR title becomes the squash commit message and is checked by `.github/workflows/pr-title.yml`. If you change the allowed types, update that file, this table, and RUNBOOK §5 together. The version is bumped automatically. **Never edit `version` in `package.json` by hand.**
 
 | Type | Use for | Release |
 |---|---|---|
@@ -112,7 +115,7 @@ Conventional Commits; the PR title becomes the squash commit message and is chec
 | `<type>!:` or `BREAKING CHANGE:` footer | Removed/renamed theme key or content field, changed URLs, change needing manual deploy steps (new secret, cluster, site engine) | major |
 | `test:` `ci:` `docs:` `style:` (formatting only) `chore:` | No runtime regression risk | none |
 
-Rule of thumb: bump by **regression risk**. If the change could alter the deployed site's behavior or appearance (code logic, image, dependencies, content), it gets at least a patch. Formatting-only and test-only changes touch code but carry no runtime risk, so they don't release. "Architecture change" is **not** automatically major. What matters is whether a contract breaks (content/theme schema, URLs, deploy steps). Full rationale is in README → Versioning.
+Rule of thumb: bump by **regression risk**. If the change could alter the deployed site's behavior or appearance (code logic, image, dependencies, content), it gets at least a patch. Formatting-only and test-only changes touch code but carry no runtime risk, so they don't release. "Architecture change" is **not** automatically major. What matters is whether a contract breaks (content/theme schema, URLs, deploy steps). Full rationale is in RUNBOOK §5.
 
 ### Infrastructure
 - Kustomize: environment differences go in overlays, never forked copies of base files. Use standard `networking.k8s.io/v1` Ingress, not Traefik CRDs, to stay portable.

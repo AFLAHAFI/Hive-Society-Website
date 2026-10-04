@@ -1,6 +1,6 @@
 # Containerization (optional)
 
-> **Very optional.** The live site is static files on Cloudflare Pages ([RUNBOOK §7](RUNBOOK.md#7-deploying)) and needs **none** of this. If you're maintaining the site day to day, you can skip this whole file.
+> **Very optional.** The live site is static files on Cloudflare ([RUNBOOK §7](RUNBOOK.md#7-deploying)) and needs **none** of this. If you're maintaining the site day to day, you can skip this whole file.
 > It exists so the site can move off Cloudflare, or grow server-side features, without starting over. CI keeps it working in the background.
 
 **Contents:** [Why containers](#why-containers) · [Tools](#tools) · [Container image](#container-image) · [GitHub Container Registry](#github-container-registry-ghcr) · [Kubernetes: local](#kubernetes-local-k3d) · [Kubernetes: production](#kubernetes-production-k3s) · [Cloudflare Tunnel](#cloudflare-tunnel) · [When its checks fail](#when-its-checks-fail)

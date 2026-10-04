@@ -6,6 +6,10 @@
  * 2. Asset fingerprints (export only): local `assets/…` references get `?v=<content hash>`. A changed file
  *    gets a new URL, so browsers fetch it immediately; unchanged files can be cached for a year. This is
  *    what makes a "disable caching" switch unnecessary.
+ * 3. Canonical URL and link previews (export only): `<link rel="canonical">` naming the page's one real
+ *    address, so search engines fold workers.dev, preview, and `?utm_…` copies into it; plus `og:title`,
+ *    `og:description`, and `og:url` copied from the page's own title, description, and that address, so
+ *    shared links get a proper preview card without anyone keeping two copies in sync.
  *
  * Interim: a template engine (see docs/PROJECT_LOG.md) replaces this when pages become templates.
  */
@@ -15,6 +19,11 @@ export interface RenderContext {
   links: Readonly<Record<string, string>>;
   /** Returns a version token for a site-root-relative asset path (e.g. `assets/x.css`), or undefined to leave it. */
   assetVersion?: (assetPath: string) => string | undefined;
+  /**
+   * Absolute URL of the page's canonical address; also turns on the generated link-preview (`og:`) tags.
+   * Omitted for the live server and the 404 page.
+   */
+  canonicalUrl?: string;
 }
 
 const TAG_WITH_SITE_LINK = /<a\b[^>]*\bdata-site-link="([^"]+)"[^>]*>/g;
@@ -40,5 +49,26 @@ export function renderPage(html: string, ctx: RenderContext): string {
       return version ? `${attr}="${slash}${path}?v=${version}${hash ?? ''}"` : whole;
     });
   }
+  if (ctx.canonicalUrl !== undefined) out = addHeadTags(out, ctx.canonicalUrl);
   return out;
+}
+
+const GENERATED_TAG = /<link\b[^>]*\brel="canonical"|<meta\b[^>]*\bproperty="og:(?:title|description|url)"/;
+
+/** Canonical link and `og:` tags, generated from the page itself so there's one source of truth. */
+function addHeadTags(html: string, canonicalUrl: string): string {
+  // A hand-written copy would drift from what's generated here, so it's an error rather than a duplicate.
+  if (GENERATED_TAG.test(html)) throw new Error('Page already has a canonical link or og:title/description/url; the export adds them');
+  if (!html.includes('</head>')) throw new Error('Page has no </head> to add a canonical link to');
+  // Title is HTML text and the description an attribute value: both are already escaped, so only quotes need it.
+  const title = /<title>([^<]*)<\/title>/.exec(html)?.[1]?.trim();
+  const description = /<meta name="description" content="([^"]*)"/.exec(html)?.[1];
+  if (!title || !description) throw new Error('Page needs a <title> and a meta description for its link preview');
+  const tags = [
+    `<link rel="canonical" href="${escapeAttr(canonicalUrl)}">`,
+    `<meta property="og:title" content="${title.replace(/"/g, '&quot;')}">`,
+    `<meta property="og:description" content="${description}">`,
+    `<meta property="og:url" content="${escapeAttr(canonicalUrl)}">`,
+  ];
+  return html.replace('</head>', `${tags.map((t) => `  ${t}\n`).join('')}</head>`);
 }

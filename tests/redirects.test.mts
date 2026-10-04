@@ -1,5 +1,5 @@
 /**
- * public/_redirects (Cloudflare Pages) must point at pages that exist, and must not shadow a page
+ * public/_redirects (Cloudflare) must point at pages that exist, and must not shadow a page
  * that still exists at the old path.
  */
 import assert from 'node:assert/strict';

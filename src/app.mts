@@ -2,9 +2,10 @@
  * Static site HTTP server, separated from the entry point (`server.mts`) so tests can
  * start it on an ephemeral port against any directory.
  *
- * It mimics Cloudflare Pages, so local testing matches the live site: `_redirects` rules, clean
- * URLs (`/about.html` and `/about/` redirect to `/about`), `404.html` for anything missing, and Pages'
- * own config files (`_redirects`, `_headers`) are never served.
+ * It mimics Cloudflare's static hosting (Workers static assets, configured in `wrangler.jsonc`), so
+ * local testing matches the live site: `_redirects` rules, clean URLs (`/about.html` and `/about/`
+ * redirect to `/about`), `404.html` for anything missing, and Cloudflare's own config files
+ * (`_redirects`, `_headers`) are never served.
  */
 import { createReadStream } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
@@ -34,13 +35,13 @@ const MIME_TYPES: Readonly<Record<string, string>> = {
   '.xml': 'application/xml',
 };
 
-/** Files Pages reads as configuration and never serves (checked against `wrangler pages dev`). */
+/** Files Cloudflare reads as configuration and never serves (checked against `wrangler dev`). */
 const PAGES_CONFIG_FILES: ReadonlySet<string> = new Set(['_redirects', '_headers', '_routes.json', '_worker.js']);
 
 /**
- * Maps a URL path to a file under `root`, mirroring Cloudflare Pages semantics:
+ * Maps a URL path to a file under `root`, mirroring Cloudflare's static hosting:
  * `/` and directories resolve to `index.html`, and extensionless paths try `<path>.html`.
- * Returns `undefined` for anything missing, outside `root` (path traversal), or a Pages config file.
+ * Returns `undefined` for anything missing, outside `root` (path traversal), or a Cloudflare config file.
  * `root` must be absolute and normalized; `createSiteServer` guarantees this.
  */
 export async function resolveFile(root: string, urlPath: string): Promise<string | undefined> {
@@ -70,8 +71,8 @@ export interface Redirect {
 }
 
 /**
- * Parses Cloudflare Pages `_redirects` (`<from> <to> [status]`, `#` comments, default 302).
- * Only exact paths are supported; Pages' splats (`*`) and placeholders (`:name`) aren't, and a
+ * Parses Cloudflare `_redirects` (`<from> <to> [status]`, `#` comments, default 302).
+ * Only exact paths are supported; Cloudflare's splats (`*`) and placeholders (`:name`) aren't, and a
  * rule using them is rejected rather than silently never matching.
  */
 export function parseRedirects(text: string): Map<string, Redirect> {
@@ -85,6 +86,9 @@ export function parseRedirects(text: string): Map<string, Redirect> {
   }
   return rules;
 }
+
+/** Workers static assets answers clean-URL redirects with 307 (Pages used 308); match production. */
+const CLEAN_URL_STATUS = 307;
 
 function redirect(res: ServerResponse, status: number, location: string): void {
   res.writeHead(status, { Location: location, 'Cache-Control': 'no-cache' });
@@ -129,18 +133,18 @@ async function handle(root: string, sitePath: string, req: IncomingMessage, res:
     return;
   }
 
-  // Clean URLs, as Pages serves them: /about.html → /about, /index.html and /index → /, /about/ → /about.
+  // Clean URLs, as Cloudflare serves them: /about.html → /about, /index.html and /index → /, /about/ → /about.
   if (pathname.endsWith('.html') && (await resolveFile(root, pathname))) {
     const clean = pathname.slice(0, -'.html'.length).replace(/(^|\/)index$/, '$1');
-    redirect(res, 308, clean + url.search);
+    redirect(res, CLEAN_URL_STATUS, clean + url.search);
     return;
   }
   if (/(^|\/)index$/.test(pathname) && (await resolveFile(root, `${pathname}.html`))) {
-    redirect(res, 308, pathname.slice(0, -'index'.length) + url.search);
+    redirect(res, CLEAN_URL_STATUS, pathname.slice(0, -'index'.length) + url.search);
     return;
   }
   if (pathname.length > 1 && pathname.endsWith('/') && (await resolveFile(root, pathname.slice(0, -1) + '.html'))) {
-    redirect(res, 308, pathname.slice(0, -1) + url.search);
+    redirect(res, CLEAN_URL_STATUS, pathname.slice(0, -1) + url.search);
     return;
   }
 

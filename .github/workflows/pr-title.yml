@@ -1,4 +1,4 @@
-# The PR title becomes the squash-merge commit and decides the release bump (README → Versioning),
+# The PR title becomes the squash-merge commit and decides the release bump (docs/RUNBOOK.md §5),
 # so only the agreed Conventional Commit types are accepted.
 name: PR title
 
@@ -18,7 +18,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # Keep in sync with README → Versioning and AGENTS.md.
+          # Keep in sync with docs/RUNBOOK.md §5 and AGENTS.md.
           types: |
             content
             theme

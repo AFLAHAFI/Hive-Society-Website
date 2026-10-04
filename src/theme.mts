@@ -1,7 +1,7 @@
 /**
  * Loading and validating `content/theme.yaml`.
  *
- * The rules are the ones in README → Theme. This module enforces the parts a machine can check:
+ * The rules are the ones in docs/ARCHITECTURE.md → Theme. This module enforces the parts a machine can check:
  * - groups map component keys to literal hex colors (no nesting, no references, no CSS names);
  * - keys and team ids are kebab-case, so they map 1:1 onto CSS custom property names;
  * - `teams` is a list of `{ id, background, text }` with unique ids.

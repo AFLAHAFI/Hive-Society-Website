@@ -63,7 +63,7 @@ Everything except the mailing list endpoint can be done at **build time**, so th
 ### Layers
 
 ```
-theme.yaml     per-component colors  ──►  CSS custom properties (:root { --navigation-background: … }); rules in README → Theme
+theme.yaml     per-component colors  ──►  CSS custom properties (:root { --navigation-background: … }); rules in docs/ARCHITECTURE.md → Theme
 site.yaml      nav, footer, socials, contact, auditions flag, copy blocks (hero text, about paragraphs)
 content/       members/*.yaml, teams/*.yaml, events (or fetched from Beeble)
 templates/     page layouts, which only reference tokens and data and never literal colors or text

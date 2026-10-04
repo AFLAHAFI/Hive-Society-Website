@@ -1,4 +1,4 @@
-# Commit prefixes follow README → Versioning: runtime/build dependencies are `deps:` (patch release);
+# Commit prefixes follow docs/RUNBOOK.md §5: runtime/build dependencies are `deps:` (patch release);
 # workflow action bumps are `ci:` (no release).
 version: 2
 updates:
