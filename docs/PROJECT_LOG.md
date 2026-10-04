@@ -7,6 +7,7 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-04 | Repository home: the **Hive-Society-Improv** GitHub org (`Hive-Society-Improv/Hive-Society-Website`); container images at `ghcr.io/hive-society-improv/hive-site` | Officers own it, not one member's account; CI, previews, CMS, and GHCR hang off it |
 | 2026-10-03 | **Hosting: Cloudflare Workers static assets** (`wrangler.jsonc`), built from GitHub by Workers Builds, replacing the hand-uploaded Pages project. Node version pinned in `.nvmrc`. Local server redirects clean URLs with 307 to match. Production only on the custom domain (`workers_dev: false`); previews on, behind Cloudflare Access (officers) | Cloudflare's direction for new projects (Astro 6 targets it); static asset requests are free; same `_redirects`/`_headers`/`404.html` behavior, verified with `wrangler dev` |
 | 2026-09-23 | Calendar: source is the revived shows-only **"Hive Shows - Website Calendar"**; page shows a **month grid with an upcoming-shows list under it**; each show shows its Google Calendar **description** and its own **add-to-calendar** link; homepage features the **next show** (falls back to "Come See Us!"). Freshness: up to a week is acceptable, so a **daily scheduled rebuild** is plenty (no visitor-side JavaScript needed). **Build deferred** | User answers to calendar questions; a live API would be overkill for the required freshness |
 | 2026-09-23 | Images are limited per class by folder (`portraits` = `members/` 1080 px / 225 KB, sized for the large card so anyone can be promoted; `team-photos` = `teams/`; `other`), all classes required; portraits and team photos have naming rules. Team names are format-checked only | Every image has a limit; teams rename about yearly, so name ↔ data checks wait for a rename procedure |
@@ -35,7 +36,6 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 
 ### Decisions needed
 - [ ] Members data location: `content/members/` now, or wait for the Beeble/`handbook/` decision.
-- [ ] GitHub home for this repo (personal or Hive org). CI, Pages, CMS, and GHCR all depend on it.
 - [ ] Content PR policy: auto-merge on green checks vs require one approval.
 - [ ] **Officers:** should "Hive Society 2025 Official Calendar!" stay public? Audited 2026-09-23: it mixes shows with internal events (meetings, socials at "Hive House", "Survivor Night", a constitution meeting, trips, tentative dates); titles/dates only, no descriptions, attendees, or residential addresses. It's discoverable because Indify's public widget config exposes all three connected calendar IDs plus the account address. Unlisting steps: secret iCal link or Google Group.
 
@@ -56,20 +56,20 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 - [ ] Commit message templates that satisfy the PR-title / Conventional Commits check.
 
 ### CI / testing
+- [ ] Remove the Dependabot `ignore` for TypeScript majors (`.github/dependabot.yml`) once `typescript-eslint`'s peer range includes TypeScript 7 (`npm view typescript-eslint peerDependencies`).
 - [ ] Roster check: a member removed from the active roster must appear in alumni (graduated *or* left); override via the officer-run "Approve roster removal" workflow (see decision). Needs members as data first. Set `ROSTER_OFFICERS` repo variable; consider short Actions log retention. When it ships, add the officer steps (RUNBOOK §9) to EDITING.md in plain words; they were removed while the check didn't exist.
 - [ ] Member ↔ portrait check: every member entry has a portrait (or an explicit "no photo") and every portrait belongs to a member; member ID = portrait base name. Not for teams until there's a rename procedure (rename photo, theme id, and data together; decide what happens to old names/alumni pages).
 - [ ] Playwright: functional tests across viewports (phone + desktop).
 - [ ] Playwright + axe: accessibility checks per page.
 - [ ] Playwright visual regression with screenshot diffs posted to the PR.
 - [ ] Lighthouse CI budgets (performance, a11y, page weight).
-- [ ] Per-PR preview deploys linked from the PR (Workers Builds gives each branch a preview URL once the project is set up).
 - [ ] Plain-language PR summary bot for non-coders.
 - [ ] release-please config: `changelog-sections` making `content`, `theme`, `refactor`, `build`, and `deps` visible (so they cut patch releases); release → GHCR tag → prod overlay. *(Dependabot `deps`/`ci` prefixes and PR-title lint are done.)*
 - [ ] CODEOWNERS: `content/**` editors vs `src/**`, `kube/**`, `.github/**` developers.
 
 ### Site
 - [ ] **Review the page descriptions by hand** (drafted 2026-10-03, the text under each page's link in search results and link previews): check facts and voice in each page's `<meta name="description">`. `tests/seo.test.mts` enforces only uniqueness and length.
-- [ ] **New members (Fall '26 roster):** photos still missing for Ziv Avros, Greg Kasper, Daniel Nunez, Nat Restrepo, Glen Romanovich, Ray Schomberg; quips still placeholders for 11 (Avros, Bhattacharjee, Deeley, Hamilton, Nunez, Oh, Restrepo, Romanovich, Ruffo, Schomberg, Sims). `grep -n "portrait-placeholder\|ALMOST FUNNY" public/members.html` finds them. Photos marked "I think" by the sender (Quentin, Zay, Atri, Katie Sims) should be confirmed.
+- [ ] **New members (Fall '26 roster):** every new member's quip is `hidden` until the set is final (11 are still placeholders: `grep -n "ALMOST FUNNY" public/members.html`). To publish, remove `hidden` from each quip, including the separate block holding Ziv's quip pictures. Photos marked "I think" by the sender (Quentin, Zay, Atri, Katie Sims) should be confirmed. `usman-faridi-1977.jpg` isn't used by any page; asked on #5 whether it replaces `usman-faridi.jpg`.
 - [ ] **Calendar page (on hold, decided 2026-09-23):** replaces Indify, which is blank today (its `checkedCalendars` is the account's private primary calendar; no events in any month, Sep 2023 → Sep 2026). Build-time from the shows calendar's ICS (parser must handle recurrence + timezones, e.g. `node-ical`). Month grid + upcoming-shows list under it; per show: title, date/time, venue, **description**, **add-to-calendar** link.
 - [ ] **Scheduled rebuilds** (with the calendar page): daily rebuild + deploy (GitHub Actions cron running `wrangler deploy` with a Cloudflare API token secret, or a Cloudflare-side trigger); redeploy only if the feed changed.
 - [ ] **Homepage "Next show" (on hold):** next upcoming show from the same data replaces "Come See Us!"; falls back to it when nothing is scheduled.
@@ -104,7 +104,7 @@ Prefer an existing, maintained package over our own code where it fits. Versions
 - [ ] `src/theme.mts` (YAML tokens → CSS variables): **Style Dictionary** (`style-dictionary` 5.x, the standard design-token build tool; outputs CSS custom properties) or **Terrazzo** (`@terrazzo/cli`, W3C Design Tokens format). Our semantic-key rules (no palette names, literal hex only) would become a custom validator/format on top; the flattening and CSS output go away.
 - [ ] Settings/theme validation (`parseSite`, `parseImagePolicy`, `validateTheme` shape checks): a schema library, **Zod** (4.x; what Astro content collections use natively) or **Valibot**/**Ajv** (JSON Schema, which also gives editors YAML autocomplete via the YAML language server). Error messages naming the bad key come built in.
 - [x] ~~`src/images.mts` dimension parsing~~ → **image-size** (done 2026-09-24). Resizing/format conversion (planned AVIF/WebP): **sharp**, or Astro's `astro:assets`, which uses it. Folder naming rules: **ls-lint** (`@ls-lint/ls-lint`, a file-name linter configured in `.ls-lint.yml`). Size limits and duplicate detection have no standard tool; keep ours.
-- [ ] `src/app.mts` static server (Pages-style URLs, cache headers, 304s): **wrangler** `pages dev` emulates Cloudflare Pages exactly (including `_headers`); for the container, **sirv** or **serve-static** handle ETag/Last-Modified and clean URLs. Astro's dev server replaces the dev path entirely.
+- [ ] `src/app.mts` static server (Cloudflare-style URLs, cache headers, 304s): **wrangler** `dev` runs Cloudflare's own runtime with `wrangler.jsonc` (including `_headers`); for the container, **sirv** or **serve-static** handle ETag/Last-Modified and clean URLs. Astro's dev server replaces the dev path entirely.
 - [ ] `src/render.mts` asset fingerprinting + `data-site-link` filling: built into Astro/Vite (hashed asset names; settings read in templates). Nothing to adopt before then.
 - [ ] `scripts/export.mts` sitemap: **@astrojs/sitemap** (or `sitemap` without Astro).
 - [ ] `tests/site-links.test.mts` (every link/image exists): **linkinator** (also checks external links) and **html-validate** (HTML correctness, a11y basics). Could complement rather than replace the offline check.
@@ -113,16 +113,16 @@ Prefer an existing, maintained package over our own code where it fits. Versions
 - [ ] Planned work, use a library from the start: ICS parsing → **node-ical**; contrast check → **colorjs.io** (`contrastWCAG21`; `wcag-contrast` is unmaintained since 2022).
 
 ### Housekeeping
-- [ ] **Cloudflare cutover** (RUNBOOK §8): create the Workers project from the repo, check its preview, move `hivesocietyimprov.com` to it, delete the old Pages project.
+- [ ] **Cloudflare cutover** (RUNBOOK §8): the Workers project (`hive-society-website`) is connected and PR previews work; remaining: confirm `main` deploys, move `hivesocietyimprov.com` to it (delete the apex CNAME to `hivesite-v2025.pages.dev` at that moment), check `workers.dev` is off, delete the old Pages project.
 - [ ] Fix `www.hivesocietyimprov.com`: its redirect rule points at `www` itself and loops (seen 2026-10-03); target the bare domain.
 - [ ] Lock Workers preview URLs with Cloudflare Access: Previews only, officers' email list, One-time PIN, Zero Trust Free (RUNBOOK §8 step 4). `wrangler.jsonc` already enables previews and disables the public workers.dev address. Turn on Web Analytics.
 - [ ] Bootstrap from npm instead of vendored files (decided 2026-09-24: do it in the Astro migration, which installs it natively; Dependabot then updates it, patch/minor only until visual regression tests exist).
-- [ ] Enable branch protection / ruleset on `main` (required checks, PR required, squash-only, no force-push); free now that the repo is public. See RUNBOOK → setup.
-- [ ] Set the real GHCR owner in `kube/overlays/prod/kustomization.yaml`.
 - [ ] GHCR image visibility: make the package public (repo is public; no cluster credentials needed), or keep it private and add `imagePullSecrets: [{name: ghcr-pull}]` to the prod overlay plus the secret (see docs/CONTAINERIZATION.md).
 - [ ] Create the Cloudflare Tunnel and the `cloudflared-token` Secret.
 
 ## Done
+- 2026-10-04: Ruleset **Protect main** (active, no bypass): PR required (0 approvals until the content-PR policy is decided), squash-only, required checks Lint, typecheck, test / Kubernetes manifests / Container image / Conventional PR title, no force-push or deletion. Repo settings: squash commit title = PR title; head branches deleted automatically after merge.
+- 2026-10-04: GHCR owner set in the prod overlay. PR previews confirmed working (Workers Builds comments the link on each PR). Dependabot holds TypeScript majors: #4 bundled TypeScript 7, which `typescript-eslint` doesn't support yet, so `npm ci` failed with ERESOLVE (as #2 had). Note: #7 was squash-merged after #8 landed on its branch, so `main` records the Workers/SEO work under that `docs:` commit; release automation isn't live yet, so no version was skipped.
 - 2026-10-03: SEO checks in CI (`tests/seo.test.mts`, on the real export): unique titles and descriptions of sane length, canonical + `og:` tags, sitemap, robots.txt. Export now generates `og:title`/`og:description`/`og:url`; hand-written `twitter:title`/`twitter:image:src` removed (X falls back to `og:`). Unique descriptions drafted for all 7 pages (review TODO under Site).
 - 2026-10-03: Export adds `<link rel="canonical">` to every page but the 404 (bare domain, clean URL), so workers.dev, preview, and tracking-parameter copies fold into one URL in search.
 - 2026-09-26: Docs split by reader: README is a front page (quick start first, contents, an explained doc index, a short Planned section); rationale moved to new `docs/ARCHITECTURE.md` (stack today vs planned, why Astro, theme rules, caching); versioning detail lives only in RUNBOOK §5; EDITING.md drops the not-yet-built officer override steps.

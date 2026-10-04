@@ -44,14 +44,14 @@ A **container registry** is to images what GitHub is to code: a place to upload 
 
 - **Same accounts and permissions as the repo.** No separate service to manage. A newly pushed image is private by default, even from a public repo; see below.
 - **Provider-neutral.** Any host can pull from it, unlike a cloud provider's own registry (e.g. DigitalOcean's), which would tie the image to that provider.
-- **Versioned.** Each release is pushed as `ghcr.io/<owner>/hive-site:<version>`, and the production cluster runs the version named in `kube/overlays/prod/kustomization.yaml`. Rolling back means pointing at the previous tag.
+- **Versioned.** Each release is pushed as `ghcr.io/hive-society-improv/hive-site:<version>`, and the production cluster runs the version named in `kube/overlays/prod/kustomization.yaml`. Rolling back means pointing at the previous tag.
 
 Publishing an image by hand (until release automation does it; see [RUNBOOK §5](RUNBOOK.md#5-versions-and-releases)):
 
 ```bash
 echo "$GITHUB_TOKEN" | docker login ghcr.io -u <github-user> --password-stdin   # a token with write:packages
-docker build -t ghcr.io/<owner>/hive-site:<version> .
-docker push ghcr.io/<owner>/hive-site:<version>
+docker build -t ghcr.io/hive-society-improv/hive-site:<version> .
+docker push ghcr.io/hive-society-improv/hive-site:<version>
 ```
 
 **Private images need cluster credentials.** The source is public, so the simplest option is to make the package public (package page → Package settings → Change visibility); then the cluster pulls without logging in. If the image stays private, the cluster must log in: create a pull secret once (token with `read:packages`) and reference it from the Deployment as `imagePullSecrets` (not yet in the prod overlay; see [PROJECT_LOG.md](PROJECT_LOG.md)):
@@ -92,7 +92,7 @@ Each release:
 
 ```bash
 # Set the image tag in kube/overlays/prod/kustomization.yaml (images → newTag), or:
-#   (cd kube/overlays/prod && kustomize edit set image hive-site=ghcr.io/<owner>/hive-site:<version>)
+#   (cd kube/overlays/prod && kustomize edit set image hive-site=ghcr.io/hive-society-improv/hive-site:<version>)
 kubectl kustomize kube/overlays/prod | less          # review what will change
 kubectl apply -k kube/overlays/prod
 kubectl -n hive rollout status deploy/hive-site      # waits until healthy

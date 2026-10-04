@@ -11,8 +11,8 @@ resources:
   - pdb.yaml
 images:
   - name: hive-site
-    newName: ghcr.io/CHANGE_ME/hive-site # TODO: GitHub org/user
-    newTag: "0.1.0" # CI: `kustomize edit set image hive-site=ghcr.io/<org>/hive-site:<sha>`
+    newName: ghcr.io/hive-society-improv/hive-site # GHCR names are lowercase: the Hive-Society-Improv org
+    newTag: "0.1.0" # CI: `kustomize edit set image hive-site=ghcr.io/hive-society-improv/hive-site:<sha>`
 replicas:
   - name: hive-site
     count: 2

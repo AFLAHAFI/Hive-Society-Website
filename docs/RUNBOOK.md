@@ -235,7 +235,7 @@ Done once when the project is set up or handed to new owners. Tick each off in [
    - require status checks: **Lint, typecheck, test**, **Kubernetes manifests**, **Container image**, **Conventional PR title** (names must match exactly);
    - block force pushes.
 
-   Then Settings → General → Pull Requests: allow **squash merging** only. Rulesets are free on public repos; if the repo is ever made private, they need GitHub Pro or Team (students get Pro free with the [GitHub Student Developer Pack](https://education.github.com/pack)).
+   Then Settings → General → Pull Requests: allow **squash merging** only, set its default commit message to **Pull request title** (so the checked PR title becomes the commit on `main`, even for one-commit PRs), and turn on **Automatically delete head branches** (stacked PRs get retargeted to `main` when their base branch goes). Rulesets are free on public repos; if the repo is ever made private, they need GitHub Pro or Team (students get Pro free with the [GitHub Student Developer Pack](https://education.github.com/pack)).
 3. **Roster officers:** Settings → Secrets and variables → Actions → Variables → new variable `ROSTER_OFFICERS` = comma-separated GitHub usernames of officers allowed to approve roster overrides (e.g. for removing someone from the roster without marking them as alumni, or when someone is kicked out of Hive). See [§9](#9-roster-changes).
 4. **Log retention:** Settings → Actions → General → artifact and log retention, e.g. 30 days. Roster-override approvals exist only in these logs.
 5. **Dependabot** runs automatically from `.github/dependabot.yml`. Turn on alerts under Settings → Code security.
@@ -335,7 +335,7 @@ Open the failed check on the PR and read the log; every check prints what's wron
 
 | When | Task |
 |---|---|
-| Weekly | Review and merge Dependabot PRs once their checks pass |
+| Weekly | Review and merge Dependabot PRs once their checks pass. If one fails because two packages can't agree on a version (`npm ci` says `ERESOLVE`), don't force it: hold that update with an `ignore` entry in `.github/dependabot.yml`, with a comment saying when to remove it |
 | When the daily form check emails you | [§11](#11-when-ci-fails), last row |
 | Start of each semester | Upcoming shows are in the shows calendar; roster is updated (leavers → Alumni); `ROSTER_OFFICERS` lists current officers |
 | When officers change | Update GitHub access, `ROSTER_OFFICERS`, and who can access the Hive Google and Cloudflare accounts |

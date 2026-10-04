@@ -9,6 +9,11 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+    ignore:
+      # typescript-eslint supports TypeScript < 6.1 only, so a TypeScript 7 bump can't install (ERESOLVE)
+      # and fails every check. Remove once typescript-eslint's peer range includes 7.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker
     directory: /
     schedule: { interval: weekly }
