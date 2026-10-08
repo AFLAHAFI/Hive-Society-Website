@@ -1,0 +1,40 @@
+/*
+ * Feature row (members' executive board, teams page): a photo beside a name or title and text.
+ * Variants: `--image-right` (photo on the right), `--centered` (centered text),
+ * `--space-below` (extra space after the last row).
+ */
+.feature-row {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #ffeb69;
+}
+.feature-row .row {
+  align-items: center;
+}
+.feature-row .section-title,
+.feature-row .body-text {
+  color: #593269;
+}
+
+.feature-row:where(.feature-row--image-right) .row {
+  flex-direction: row-reverse;
+}
+.feature-row:where(.feature-row--space-below) {
+  padding-bottom: 4rem;
+}
+.feature-row:where(.feature-row--centered) .section-title,
+.feature-row:where(.feature-row--centered) .body-text {
+  text-align: center;
+}
+
+@media (max-width: 991px) {
+  .feature-row .image-wrapper {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+@media (min-width: 992px) {
+  .feature-row .text-wrapper {
+    padding: 0 2rem;
+  }
+}

@@ -1,0 +1,401 @@
+/*
+ * Site navigation (every page): a fixed, rounded bar with the logo, page links, a "Members" dropdown,
+ * and social icons. Below 992px the links fold into a menu under a hamburger button.
+ *
+ * Built on Bootstrap's navbar and the vendored navbar-dropdown script, which add state classes:
+ * `.show` (Bootstrap: menu open), `.opened` (on the nav while the menu is open), `.open` (on the
+ * dropdown's <li> while it's open), `.navbar-short` (after scrolling). Many rules use !important to
+ * beat those libraries' own styles.
+ */
+
+/* ---- Bar ---- */
+.site-nav {
+  position: relative;
+  z-index: 1000;
+  width: 100%;
+}
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.site-nav .navbar {
+  min-height: 90px;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: all 0.3s;
+}
+.site-nav .navbar-dropdown {
+  padding: 0 1rem;
+}
+/* The visible bar: a translucent white pill 1rem below the top of the window. */
+.site-nav .container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  left: 0;
+  right: 0;
+  height: 90px;
+  margin-top: 1rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 100vw;
+  background: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.08);
+}
+
+/* ---- Logo and site name ---- */
+.site-nav .navbar-brand {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-right: 0;
+  padding: 10px 0;
+  word-break: break-word;
+  z-index: 1;
+  transition: all 0.3s;
+}
+.site-nav .navbar-brand span,
+.site-nav .navbar-brand .navbar-caption-wrap {
+  display: flex;
+}
+.site-nav .navbar-logo {
+  margin: 0 !important;
+  padding-left: 2rem;
+}
+.site-nav .navbar-brand img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 0 !important;
+}
+.site-nav .navbar-brand .navbar-logo img {
+  display: flex;
+  width: auto;
+}
+/* Beats the navbar-dropdown plugin's 50px logo and its scrolled-state 2rem; the phone rule below is
+   !important and still applies. */
+.site-nav .navbar.navbar-dropdown .navbar-logo img {
+  height: 3rem;
+}
+.site-nav .navbar-caption {
+  padding-left: 1rem;
+  padding-right: 0.5rem;
+}
+.site-nav .navbar-brand .navbar-caption {
+  line-height: inherit !important;
+}
+
+/* ---- Page links ---- */
+.navbar-collapse {
+  flex-basis: 100%;
+  flex-grow: 1;
+  align-items: center;
+}
+.site-nav .navbar .navbar-collapse {
+  justify-content: flex-end;
+  z-index: 1;
+}
+.site-nav .navbar-nav {
+  margin: auto;
+}
+.site-nav ul.navbar-nav {
+  flex-wrap: wrap;
+}
+.site-nav .navbar-nav .nav-item {
+  padding: 0 !important;
+  transition: 0.3s all !important;
+}
+.site-nav .nav-link {
+  position: relative;
+  width: fit-content;
+}
+.site-nav a.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.site-nav .navbar-nav .nav-item .nav-link {
+  margin: 0 !important;
+  padding: 16px !important;
+  border-radius: 1rem !important;
+  transition: 0.3s all !important;
+}
+.site-nav .navbar-nav .nav-item .nav-link:hover {
+  background-color: rgba(27, 31, 10, 0.06);
+}
+.site-nav .nav-item:focus,
+.site-nav .nav-link:focus {
+  outline: none;
+}
+
+/* ---- "Members" dropdown ---- */
+/* The caret after "Members"; it flips while the dropdown is open. */
+.site-nav .nav-dropdown .link.dropdown-toggle::after {
+  margin-left: 0.5rem;
+  margin-top: 0.2rem;
+  transition: 0.3s all;
+}
+.site-nav .navbar-nav .open .nav-link::after {
+  transform: rotate(180deg);
+}
+.site-nav .dropdown-menu {
+  flex-direction: column;
+  flex-wrap: wrap;
+  min-width: auto;
+  max-width: 100%;
+  padding: 12px 4px !important;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.8) !important;
+  transition: 0.3s all !important;
+}
+/* Desktop: a floating panel centered under "Members". */
+.site-nav .navbar .dropdown > .dropdown-menu {
+  display: none;
+  top: calc(100% + 20px);
+  left: 50%;
+  width: max-content;
+  max-width: 500px !important;
+  transform: translateX(-50%);
+}
+.site-nav .navbar .dropdown.open > .dropdown-menu {
+  display: flex;
+}
+.site-nav .navbar-nav .dropdown-item {
+  margin: 0 8px !important;
+  padding: 12px !important;
+  border-radius: 0.5rem !important;
+  transition: 0.3s all !important;
+}
+.site-nav .navbar-nav .dropdown-item:hover {
+  background-color: rgba(27, 31, 10, 0.06);
+}
+.site-nav .dropdown .dropdown-menu .dropdown-item {
+  width: auto;
+}
+.site-nav .navbar .dropdown > .dropdown-menu .dropdown-item {
+  line-height: 1 !important;
+}
+.site-nav .dropdown .dropdown-menu .dropdown-item::after {
+  right: 0.5rem;
+}
+.site-nav .dropdown-item.active,
+.site-nav .dropdown-item:active {
+  background-color: transparent;
+}
+
+/* ---- Social icons ---- */
+.site-nav .nav-social {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  padding: 0.3rem 1rem 0;
+  text-align: center;
+}
+.site-nav .nav-social-link {
+  padding-right: 0.5rem;
+  font-size: 1.5rem;
+  color: #593269 !important;
+}
+/* The icon glyphs fill their em box edge to edge, so at 24px they looked undersized next to the logo. */
+.nav-social-link .social-icon > svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+/* ---- Hamburger button (below 992px; Bootstrap hides it on wider screens) ---- */
+.site-nav .navbar-toggler {
+  position: relative;
+  order: 1000;
+  align-self: center;
+  width: 31px;
+  height: 20px;
+  margin-left: 12px;
+  margin-right: 8px;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  background: transparent;
+  font-size: 1.25rem;
+  line-height: 1;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.site-nav .navbar-toggler:focus,
+.site-nav .navbar-toggler:hover {
+  text-decoration: none;
+  box-shadow: none;
+}
+/* The hamburger is a <span> (a <div> isn't allowed inside <button>); keep it a block box. */
+.navbar-toggler .hamburger {
+  display: block;
+}
+/* Four bars: the middle two overlap. Opening the menu hides the outer two and turns the middle two
+   into an X. */
+.site-nav .navbar-toggler .hamburger span {
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 2px;
+  background-color: #593269;
+}
+.site-nav .navbar-toggler .hamburger span:nth-child(1) {
+  top: 0;
+  transition: all 0.2s;
+}
+.site-nav .navbar-toggler .hamburger span:nth-child(2),
+.site-nav .navbar-toggler .hamburger span:nth-child(3) {
+  top: 8px;
+  transition: all 0.15s;
+}
+.site-nav .navbar-toggler .hamburger span:nth-child(4) {
+  top: 16px;
+  transition: all 0.2s;
+}
+.site-nav nav.opened .hamburger span:nth-child(1),
+.site-nav nav.opened .hamburger span:nth-child(4) {
+  top: 8px;
+  right: 50%;
+  width: 0;
+  opacity: 0;
+  transition: all 0.2s;
+}
+.site-nav nav.opened .hamburger span:nth-child(2) {
+  transform: rotate(45deg);
+  transition: all 0.25s;
+}
+.site-nav nav.opened .hamburger span:nth-child(3) {
+  transform: rotate(-45deg);
+  transition: all 0.25s;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 992px) {
+  .site-nav .container {
+    padding-right: 2rem;
+  }
+  .site-nav .nav-social {
+    justify-content: flex-start;
+    margin-bottom: 0.5rem;
+  }
+}
+/* Below 992px: links fold into a frosted panel that drops down under the bar. */
+@media (max-width: 991px) {
+  .site-nav .navbar-brand {
+    margin-right: auto;
+  }
+  .site-nav .navbar .navbar-brand {
+    flex-shrink: initial;
+    flex-basis: auto;
+    padding-right: 10px;
+    word-break: break-word;
+  }
+  .site-nav .navbar .navbar-toggler {
+    flex-basis: auto;
+  }
+  .site-nav .navbar-collapse {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    z-index: -1 !important;
+    width: 100%;
+    max-height: 93.5vh;
+    padding: 1rem;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(8px);
+    opacity: 1;
+  }
+  .site-nav .navbar-collapse.show {
+    overflow: auto;
+  }
+  .site-nav .navbar .nav-item .nav-link::before {
+    display: none;
+  }
+  .site-nav .navbar-nav .nav-item .nav-link::after {
+    margin-left: 10px;
+  }
+  .site-nav .navbar .nav-social {
+    padding-left: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  /* The dropdown opens inline, as a tinted box inside the menu. */
+  .site-nav .navbar.opened .dropdown-menu {
+    top: 0;
+  }
+  .site-nav .navbar .dropdown > .dropdown-menu {
+    top: 10px;
+    left: 0;
+    max-width: 100% !important;
+    padding: 8px !important;
+    border-radius: 1rem;
+    background-color: rgba(27, 31, 10, 0.04) !important;
+    transform: translateX(0);
+  }
+  .site-nav .navbar .dropdown.open > .dropdown-menu {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .site-nav .navbar .dropdown-menu .dropdown-item {
+    padding: 0.25rem 1.5rem !important;
+    text-align: center;
+  }
+  .site-nav .navbar .dropdown > .dropdown-menu .dropdown-item {
+    margin-bottom: 4px !important;
+    padding: 8px !important;
+    line-height: 1 !important;
+  }
+  .site-nav .navbar .dropdown-menu .dropdown-item::after {
+    right: auto;
+  }
+}
+@media (max-width: 767px) {
+  .site-nav .container {
+    width: 95%;
+    height: 56px !important;
+    margin-top: 0;
+    padding-right: 1rem;
+  }
+  .site-nav .navbar {
+    min-height: 72px;
+  }
+  .site-nav .navbar-logo {
+    padding-left: 1rem;
+  }
+  .site-nav .navbar .navbar-logo img {
+    height: 2rem !important;
+  }
+  .site-nav .navbar-toggler {
+    transform: scale(0.8);
+  }
+  .site-nav .navbar-collapse {
+    max-height: 80vh;
+  }
+  .site-nav .nav-dropdown {
+    padding-bottom: 0.5rem;
+  }
+}
+@media (min-width: 992px) {
+  .site-nav .navbar-nav {
+    padding-left: 1.5rem;
+  }
+  .site-nav .navbar-nav.nav-dropdown {
+    display: flex;
+  }
+  /* An invisible bridge under "Members" so the pointer can cross the gap to the open dropdown. */
+  .site-nav .navbar-nav .open .nav-link::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    height: 20px;
+    background: transparent;
+  }
+}

@@ -49,7 +49,7 @@ public/ (pages) ─┼─► npm start           → local preview, http://local
                  └─► npm run export → dist/ → Cloudflare Workers → hivesocietyimprov.com
 ```
 
-- **`public/`**: the site's pages (`*.html`) and `assets/`: `images/`, `css/` (the site's styles; layout fixes go in `css/overrides.css`), and `vendor/` (third-party libraries such as Bootstrap, kept unmodified). (Being replaced by the Astro version; see [ARCHITECTURE.md](ARCHITECTURE.md).)
+- **`public/`**: the site's pages (`*.html`) and `assets/`: `images/`, `css/` (the site's styles: `base.css` for the whole page, plus one file per kind of section in `css/sections/`, named after the section's class), and `vendor/` (third-party libraries such as Bootstrap, kept unmodified). (Being replaced by the Astro version; see [ARCHITECTURE.md](ARCHITECTURE.md).)
 - **`content/theme.yaml`**: every color on the site. **`content/site.yaml`**: settings that pages read (calendar, mailing-list form) and image limits.
 - **`public/assets/images/members/`**: one portrait per member, `firstname-lastname.jpg` ([§6](#member-portraits)).
 - **`src/`**: the small Node server behind `npm start`, and the code that reads the YAML files.
@@ -290,6 +290,7 @@ Written with Node's built-in test runner (`node:test`, no extra framework). All 
 | `tests/redirects.test.mts` | `public/_redirects` is well-formed, every old URL points at a page that exists, and no redirect hides a page that still exists |
 | `tests/theme.test.mts` | The color rules for `theme.yaml`: real hex values only, no color names or references, correct naming, valid team list |
 | `tests/images.test.mts` | Reading image dimensions, and the image rules: per-folder size limits, every class has limits, exceptions need a reason, no duplicates, no leftover exceptions, member portrait and team photo naming |
+| `tests/css-structure.test.mts` | Each page loads `base.css` plus exactly the stylesheets for the kinds of section it contains (`<section class="hero">` → `sections/hero.css`), and no section stylesheet is left unused. Failing? Add or remove the page's `<link>` to match its sections |
 | `tests/site-links.test.mts` | Every link and image on every page points to a file that exists, and links between pages use clean URLs (`about`, not `about.html`) |
 | `tests/docs.test.mts` | This runbook lists every npm script, every test file, and every allowed PR-title type |
 

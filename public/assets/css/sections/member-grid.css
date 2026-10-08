@@ -1,0 +1,57 @@
+/* Member grid (members page, active members): portrait cards with name, class year, and quip. */
+.member-grid {
+  padding-top: 4rem;
+  padding-bottom: 0;
+  background-color: #ffeb69;
+}
+.member-grid .content-head {
+  max-width: 800px;
+}
+.member-grid .item:focus,
+.member-grid span:focus {
+  outline: none;
+}
+.member-grid .item-wrapper {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: 2rem;
+}
+.member-grid img,
+.member-grid .item-img {
+  width: 100%;
+  height: 100%;
+}
+/* Portraits are square, the "photo coming soon" placeholder is 4:3. Rows mixing the two had uneven
+   card heights, so every card image renders square. */
+.member-grid .item-img img {
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.member-grid .item-title {
+  color: #593269;
+  text-align: center;
+}
+/* Subtitles are <div>s, not headings: keep the 1.2 line height the old h6 rule gave them. */
+.member-grid .item-subtitle {
+  line-height: 1.2;
+  color: #593269;
+  text-align: center;
+}
+/* Small inline pictures inside quips, squared to the text height. `.member-grid img` above stretches
+   card images to full width, so this needs the extra specificity to undo it, and the site-wide image
+   rounding (base.css) would turn pictures this small into circles. */
+.member-grid img.little-picture {
+  display: inline-block;
+  width: auto;
+  height: 1.5em;
+  object-fit: cover;
+  vertical-align: middle;
+  border-radius: 0 !important;
+}
+
+@media (max-width: 767px) {
+  .member-grid .item-wrapper {
+    margin-bottom: 1rem;
+  }
+}

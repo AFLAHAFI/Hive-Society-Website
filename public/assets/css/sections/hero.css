@@ -1,0 +1,69 @@
+/*
+ * Hero (home and about pages): a photo beside a title, text, and button. `hero--image-right` puts
+ * the photo on the right.
+ *
+ * The hero fills the first screen, so the footer starts below the fold. --nav-bottom is where the
+ * fixed navbar ends (site-nav.css: a 90px bar 16px down, or 72px flush on phones); the content starts
+ * one gap below it.
+ * - Side by side (992px+): content is centered, with the bottom padding equal to the gap, so the photo
+ *   sits midway between the navbar and the fold.
+ * - Stacked (below 992px): content starts at the top with small gaps, so the photo hugs the navbar and
+ *   the text follows right under it.
+ */
+.hero {
+  --nav-bottom: 106px;
+  --hero-gap: 1rem;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--nav-bottom) + var(--hero-gap));
+  padding-bottom: var(--hero-gap);
+  background-color: #ffeb69;
+}
+.hero .row {
+  align-items: center;
+  row-gap: var(--hero-gap);
+}
+/* The group photo's 1.9:1 original has empty classroom at the sides, so it is cropped there (never
+   stretched: object-fit) to 7:5, the narrowest crop that keeps everyone in frame, which makes it
+   taller. Its height is capped to the screen minus the navbar and gaps, so short or ultrawide windows
+   crop instead of pushing it off screen. */
+.hero .image-wrapper img {
+  aspect-ratio: 7 / 5;
+  height: auto;
+  max-height: calc(100vh - var(--nav-bottom) - 2 * var(--hero-gap));
+  max-height: calc(100svh - var(--nav-bottom) - 2 * var(--hero-gap));
+  object-fit: cover;
+  object-position: center;
+}
+.hero .section-title,
+.hero .body-text,
+.hero .section-buttons {
+  color: #593269;
+}
+
+.hero:where(.hero--image-right) .row {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 991px) {
+  .hero .image-wrapper {
+    padding: 0 1rem;
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 767px) {
+  .hero {
+    --nav-bottom: 72px;
+  }
+}
+@media (min-width: 992px) {
+  .hero {
+    --hero-gap: 1.5rem;
+    justify-content: center;
+  }
+  .hero .text-wrapper {
+    padding: 0 2rem;
+  }
+}

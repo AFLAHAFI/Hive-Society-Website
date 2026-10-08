@@ -1,0 +1,78 @@
+/*
+ * Embed section: a title over an embedded Google page. Every use is a variant:
+ * `--calendar` (calendar page: Google Calendar plus subscribe buttons) or `--signup` (mailing list
+ * page: Google Form).
+ */
+.embed-section .section-title {
+  color: #593269;
+}
+.embed-section .section-subtitle {
+  color: #ffffff;
+  text-align: left;
+}
+.embed-section .google-map {
+  position: relative;
+  height: 30rem;
+  border-radius: 2rem;
+}
+.embed-section .google-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 2rem;
+}
+/* Subscribe buttons wrap under each other on narrow columns. */
+.embed-section .calendar-subscribe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.embed-section .calendar-subscribe .btn {
+  margin: 0;
+}
+
+/* The Google Form sits in the frame built for the calendar (fixed 30rem), so it would scroll inside
+   its own frame. The frame is sized to the form's full height instead; it's cross-origin, so it
+   can't size itself. Heights are the live form's tallest state (submitted empty, which adds error
+   messages: +32px) at the frame width each breakpoint gives, plus ~8px. The frame keeps its own
+   scrolling as a fallback, so if the form grows (check:form flags question changes) it still works;
+   re-measure then. Must stay below the .google-map rules: same specificity, wins by order. */
+.embed-section .embed-form {
+  --form-height: 870px; /* frame 689-912px wide: 862px */
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+.embed-section .embed-form,
+.embed-section .embed-form iframe {
+  height: var(--form-height);
+}
+
+.embed-section:where(.embed-section--calendar) {
+  padding-top: 10rem;
+  padding-bottom: 4rem;
+  background-color: #ffeb69;
+}
+.embed-section:where(.embed-section--calendar) .section-subtitle {
+  color: #593269;
+}
+.embed-section:where(.embed-section--signup) {
+  padding-top: 10rem;
+  padding-bottom: 3rem;
+  background-color: #ffeb69;
+}
+.embed-section:where(.embed-section--signup) .section-subtitle {
+  color: #593269;
+}
+
+@media (max-width: 767px) {
+  .embed-section .embed-form { --form-height: 925px; } /* frame 529-720px: 916px */
+}
+@media (max-width: 575px) {
+  .embed-section .embed-form { --form-height: 1050px; } /* frame 313-529px: up to 1042px */
+}
+@media (max-width: 359px) {
+  .embed-section .embed-form { --form-height: 1120px; } /* frame 273px (320px phone): 1110px */
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .embed-section .embed-form { --form-height: 900px; } /* frame ~598px: 894px */
+}

@@ -1,0 +1,63 @@
+/* Site footer (every page): page links, social icons, copyright. */
+.site-footer {
+  padding-top: 1.5rem;
+  padding-bottom: 1.25rem;
+  background-color: #232323;
+}
+.site-footer .footer-links {
+  width: 100%;
+  justify-content: center;
+}
+.site-footer .footer-menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-footer .footer-menu li {
+  padding: 0 1rem;
+}
+/* The links carry type-heading (32px), which outweighed the page; footer text is smaller. */
+.site-footer .footer-menu-item {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+.site-footer .social-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.site-footer .social-row .social-item {
+  margin: 8px;
+}
+.site-footer .social-row .social-item a .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 100%;
+  font-size: 32px;
+  background-color: #ffeb69;
+  color: #000000;
+  transition: all 0.3s ease-in-out;
+}
+.site-footer .social-row .social-item a:hover .icon,
+.site-footer .social-row .social-item a:focus .icon {
+  background-color: #ffffff;
+}
+/* The icon glyphs fill their em box edge to edge, so at 32px they left the 72px bubbles mostly empty. */
+.site-footer .social-item .social-icon > svg {
+  width: 1.3em;
+  height: 1.3em;
+}
+.site-footer .copyright {
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #ffeb69;
+  text-align: center;
+}

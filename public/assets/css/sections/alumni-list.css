@@ -1,0 +1,56 @@
+/* Alumni list (members page): names and class years in columns. */
+.alumni-list {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-color: #ffeb69;
+}
+.alumni-list .content-head {
+  max-width: 800px;
+}
+/* Columns are only as wide as their widest name (max-content), so a column's names share a left
+   edge, and the columns spread across the full width. Column count steps down with width so the
+   longest name (~300px) never overflows: 5 → 4 → 2 → 1. Reading order stays row by row. */
+.alumni-list .row:has(> .item) {
+  display: grid;
+  grid-template-columns: max-content;
+  justify-content: center;
+}
+.alumni-list .row > .item {
+  width: auto;
+  max-width: none;
+}
+.alumni-list .item-wrapper {
+  display: flex;
+  margin-bottom: 2rem;
+}
+.alumni-list .card-title {
+  text-align: left;
+  color: #593269;
+}
+.alumni-list .card-text {
+  color: #593269;
+}
+
+@media (max-width: 767px) {
+  .alumni-list .item-wrapper {
+    margin-bottom: 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .alumni-list .row:has(> .item) {
+    grid-template-columns: repeat(2, max-content);
+    justify-content: space-evenly;
+  }
+}
+@media (min-width: 992px) {
+  .alumni-list .row:has(> .item) {
+    grid-template-columns: repeat(4, max-content);
+    justify-content: space-between;
+    padding-inline: 3%;
+  }
+}
+@media (min-width: 1400px) {
+  .alumni-list .row:has(> .item) {
+    grid-template-columns: repeat(5, max-content);
+  }
+}

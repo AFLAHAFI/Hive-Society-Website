@@ -1,0 +1,44 @@
+/* Contact cards (contact page): a page title over white cards, one per way to reach us. */
+.contact-cards {
+  padding-top: 8.5rem;
+  padding-bottom: 2.5rem;
+  background-color: #ffeb69;
+}
+.contact-cards .content-head {
+  max-width: 800px;
+}
+.contact-cards .section-title {
+  margin-bottom: 1.5rem;
+  color: #593269;
+}
+.contact-cards .row {
+  justify-content: center;
+}
+.contact-cards .item {
+  margin-bottom: 1.5rem;
+}
+.contact-cards .item .item-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 2.25rem;
+  background: #ffffff;
+}
+.contact-cards .item-wrapper p:last-child {
+  margin-bottom: 0;
+}
+.contact-cards .card-title,
+.contact-cards p {
+  color: #593269;
+}
+
+@media (max-width: 767px) {
+  .contact-cards .item .item-wrapper {
+    padding: 2rem 1.5rem;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .contact-cards .item .item-wrapper {
+    padding: 2rem 1.5rem;
+  }
+}

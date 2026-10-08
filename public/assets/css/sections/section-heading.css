@@ -1,0 +1,22 @@
+/*
+ * Section heading: a heading on its own. Every use is a variant:
+ * `--page-title` (the page's h1, clearing the fixed navbar) or `--band` (a darker strip titling the
+ * sections below it).
+ */
+.section-heading:where(.section-heading--page-title) {
+  padding-top: 10rem;
+  padding-bottom: 3rem;
+  background-color: #ffeb69;
+}
+.section-heading:where(.section-heading--page-title) .section-title {
+  color: #593269;
+}
+
+.section-heading:where(.section-heading--band) {
+  padding-top: 0;
+  padding-bottom: 1rem;
+  background-color: #ffdd00;
+}
+.section-heading:where(.section-heading--band) .section-subtitle {
+  color: #593269;
+}
