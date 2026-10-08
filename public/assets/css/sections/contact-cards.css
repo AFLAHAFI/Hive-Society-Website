@@ -1,6 +1,6 @@
 /* Contact cards (contact page): a page title over white cards, one per way to reach us. */
 .contact-cards {
-  padding-top: 8.5rem;
+  padding-top: var(--page-top);
   padding-bottom: 2.5rem;
   background-color: #ffeb69;
 }

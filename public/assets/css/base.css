@@ -14,6 +14,26 @@
  */
 
 /* ---- Page layout ---- */
+/* The fixed navbar (sections/site-nav.css) is --nav-height tall, --nav-gap below the top of the
+   window. Every page's first section starts --page-top below the window top, so its content clears
+   the bar by the same margin on every page. */
+:root {
+  --nav-gap: 1rem;
+  --nav-height: 90px;
+  --nav-bottom: calc(var(--nav-gap) + var(--nav-height));
+  --page-top: calc(var(--nav-bottom) + 2.5rem);
+}
+@media (max-width: 767px) {
+  :root {
+    --nav-gap: 0.5rem;
+    --nav-height: 56px;
+    --page-top: calc(var(--nav-bottom) + 1.5rem);
+  }
+}
+/* In-page links (members#alumni) land below the bar instead of under it. */
+html {
+  scroll-padding-top: calc(var(--nav-bottom) + 1rem);
+}
 html,
 body {
   height: auto;
@@ -144,20 +164,9 @@ strong {
   font-style: normal;
   line-height: 1.7;
 }
-blockquote {
-  position: relative;
-  padding: 3rem;
-  border-left: 3px solid;
-  border-color: #ffeb69;
-  font-size: 1.09rem;
-  font-style: italic;
-}
 ul,
 ol,
 pre,
-blockquote {
-  margin-bottom: 2.3125rem;
-}
 .align-left {
   text-align: left;
 }
@@ -165,82 +174,33 @@ blockquote {
   text-align: center;
 }
 
-/* Type scale: every text element carries one of these sizes. Each shrinks fluidly on small screens:
-   linearly from its full size at 768px (48rem) down to a minimum at 320px (20rem), and again between
-   992px and 1400px. */
+/* Type scale: every text element carries one of these sizes. Each grows with the window between
+   its phone size (at ~390px) and its desktop size, via clamp(min, fluid, max). Phones get 16px body
+   text; the old Mobirise scale bottomed out at 18px body and 40px+ titles, which read as shouting. */
 .type-hero {
   font-family: 'Inter Tight', sans-serif;
-  font-size: 5rem;
-  line-height: 1;
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 5rem);
+  line-height: 1.1;
 }
 .type-title {
   font-family: 'Inter Tight', sans-serif;
-  font-size: 4rem;
-  line-height: 1;
-}
-.type-nav {
-  font-family: 'Inter Tight', sans-serif;
-  font-size: 1.4rem;
-  line-height: 1.5;
+  font-size: clamp(2rem, 1.1rem + 3vw, 4rem);
+  line-height: 1.1;
 }
 .type-heading {
   font-family: 'Inter Tight', sans-serif;
-  font-size: 2rem;
-  line-height: 1.5;
+  font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2rem);
+  line-height: 1.3;
 }
 .type-body {
   font-family: 'Inter Tight', sans-serif;
-  font-size: 1.4rem;
-  line-height: 1.3;
+  font-size: clamp(1rem, 0.85rem + 0.6vw, 1.4rem);
+  line-height: 1.5;
 }
-@media (max-width: 992px) {
-  .type-hero {
-    font-size: 4rem;
-  }
-}
-@media (max-width: 768px) {
-  .type-hero {
-    font-size: calc(2.4rem + (5 - 2.4) * ((100vw - 20rem) / (48 - 20)));
-    line-height: calc(1.1 * (2.4rem + (5 - 2.4) * ((100vw - 20rem) / (48 - 20))));
-  }
-  .type-title {
-    font-size: calc(2.05rem + (4 - 2.05) * ((100vw - 20rem) / (48 - 20)));
-    line-height: calc(1.3 * (2.05rem + (4 - 2.05) * ((100vw - 20rem) / (48 - 20))));
-  }
-  .type-nav {
-    font-size: calc(1.14rem + (1.4 - 1.14) * ((100vw - 20rem) / (48 - 20)));
-    line-height: calc(1.4 * (1.14rem + (1.4 - 1.14) * ((100vw - 20rem) / (48 - 20))));
-  }
-  .type-heading {
-    font-size: calc(1.35rem + (2 - 1.35) * ((100vw - 20rem) / (48 - 20)));
-    line-height: calc(1.4 * (1.35rem + (2 - 1.35) * ((100vw - 20rem) / (48 - 20))));
-  }
-  .type-body {
-    font-size: calc(1.14rem + (1.4 - 1.14) * ((100vw - 20rem) / (48 - 20)));
-    line-height: calc(1.4 * (1.14rem + (1.4 - 1.14) * ((100vw - 20rem) / (48 - 20))));
-  }
-}
-@media (min-width: 992px) and (max-width: 1400px) {
-  .type-hero {
-    font-size: calc(2.4rem + (5 - 2.4) * ((100vw - 62rem) / (87 - 62)));
-    line-height: calc(1.1 * (2.4rem + (5 - 2.4) * ((100vw - 62rem) / (87 - 62))));
-  }
-  .type-title {
-    font-size: calc(2.05rem + (4 - 2.05) * ((100vw - 62rem) / (87 - 62)));
-    line-height: calc(1.3 * (2.05rem + (4 - 2.05) * ((100vw - 62rem) / (87 - 62))));
-  }
-  .type-nav {
-    font-size: calc(1.14rem + (1.4 - 1.14) * ((100vw - 62rem) / (87 - 62)));
-    line-height: calc(1.4 * (1.14rem + (1.4 - 1.14) * ((100vw - 62rem) / (87 - 62))));
-  }
-  .type-heading {
-    font-size: calc(1.35rem + (2 - 1.35) * ((100vw - 62rem) / (87 - 62)));
-    line-height: calc(1.4 * (1.35rem + (2 - 1.35) * ((100vw - 62rem) / (87 - 62))));
-  }
-  .type-body {
-    font-size: calc(1.14rem + (1.4 - 1.14) * ((100vw - 62rem) / (87 - 62)));
-    line-height: calc(1.4 * (1.14rem + (1.4 - 1.14) * ((100vw - 62rem) / (87 - 62))));
-  }
+.type-nav {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: clamp(1rem, 0.8rem + 0.5vw, 1.25rem);
+  line-height: 1.5;
 }
 
 /* ---- Links ---- */
@@ -276,9 +236,6 @@ a[class*="text-"]:not(.nav-link):not(.dropdown-item):not([role]):not(.navbar-cap
 .text-success {
   color: #ffa600 !important;
 }
-.text-info {
-  color: #593269 !important;
-}
 a.text-primary:hover,
 a.text-primary:focus,
 a.text-primary.active {
@@ -288,11 +245,6 @@ a.text-success:hover,
 a.text-success:focus,
 a.text-success.active {
   color: #996400 !important;
-}
-a.text-info:hover,
-a.text-info:focus,
-a.text-info.active {
-  color: #1e1124 !important;
 }
 
 /* ---- Buttons ---- */
@@ -312,15 +264,12 @@ button {
   margin: 0.6rem 0.6rem;
   padding: 1.25rem 2rem;
   border-width: 2px;
-  border-radius: 4px;
+  border-radius: 100px;
   font-style: normal;
   font-weight: 600;
   white-space: normal;
   word-break: break-word;
   transition: all 0.2s ease-in-out;
-}
-.section-buttons .btn:not(.btn-form) {
-  border-radius: 100px;
 }
 /* Bootstrap's "info" button, recolored: the site's purple call-to-action button. */
 .btn-info,
@@ -378,33 +327,14 @@ iframe {
   display: block;
   width: 100%;
 }
-figure {
-  margin-bottom: 0;
-  overflow: hidden;
-}
 .card-box {
   width: 100%;
 }
-/* Rounded corners on every image, embed frame, and card. */
+/* Rounded corners on every image and card. */
 img,
-.google-map iframe,
 .item-wrapper {
   border-radius: 2rem !important;
 }
-/* Social icons: inline SVGs of the old icon font's glyphs, sized and colored like the glyphs they
-   replaced, so the sections' .icon rules (font-size, color) still apply. */
-.social-icon {
-  display: inline-block;
-  line-height: 0;
-  vertical-align: -0.0625em; /* the glyphs' descent: 64/1024 em */
-}
-.social-icon > svg {
-  display: block;
-  width: 1em;
-  height: 1em;
-  fill: currentColor;
-}
-
 /* ---- Focus ---- */
 /* Mouse clicks show no outline; keyboard focus shows a clear one. */
 :focus {

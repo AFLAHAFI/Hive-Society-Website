@@ -1,401 +1,198 @@
 /*
- * Site navigation (every page): a fixed, rounded bar with the logo, page links, a "Members" dropdown,
- * and social icons. Below 992px the links fold into a menu under a hamburger button.
+ * Site navigation (every page): a translucent pill fixed at the top with the logo, page links, a
+ * "Members" dropdown and social icons. Below 1200px the links and icons fold into a panel under a
+ * hamburger button; above it they sit in the bar.
  *
- * Built on Bootstrap's navbar and the vendored navbar-dropdown script, which add state classes:
- * `.show` (Bootstrap: menu open), `.opened` (on the nav while the menu is open), `.open` (on the
- * dropdown's <li> while it's open), `.navbar-short` (after scrolling). Many rules use !important to
- * beat those libraries' own styles.
+ * Built on Bootstrap's navbar (`navbar-expand-xl`): its collapse script opens the panel and its
+ * dropdown script opens "Members". Colors go through Bootstrap's own --bs-navbar-* and
+ * --bs-dropdown-* variables rather than fighting its selectors. The bar's size comes from
+ * --nav-gap and --nav-height (base.css), which also tell each page's first section where the
+ * bar ends.
  */
-
-/* ---- Bar ---- */
 .site-nav {
-  position: relative;
-  z-index: 1000;
-  width: 100%;
-}
-.navbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-}
-.site-nav .navbar {
-  min-height: 90px;
-  padding: 0 !important;
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  transition: all 0.3s;
-}
-.site-nav .navbar-dropdown {
-  padding: 0 1rem;
-}
-/* The visible bar: a translucent white pill 1rem below the top of the window. */
-.site-nav .container {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
-  align-items: center;
+  position: fixed;
+  top: 0;
   left: 0;
   right: 0;
-  height: 90px;
-  margin-top: 1rem;
-  padding: 0.5rem 0.6rem;
+  z-index: 1030;
+  background: none; /* base.css gives every section a white background */
+}
+.site-nav .navbar {
+  --bs-navbar-color: #593269;
+  --bs-navbar-hover-color: #593269;
+  --bs-navbar-active-color: #593269;
+  --bs-navbar-nav-link-padding-x: 1rem;
+  --bs-navbar-toggler-focus-width: 0;
+  padding: var(--nav-gap) 1rem 0;
+}
+/* The visible bar. */
+.site-nav .nav-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1320px;
+  height: var(--nav-height);
+  margin: 0 auto;
+  padding: 0 1rem 0 1.5rem;
   border-radius: 100vw;
-  background: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.08);
+  backdrop-filter: blur(8px);
 }
 
 /* ---- Logo and site name ---- */
-.site-nav .navbar-brand {
+.site-nav .nav-brand {
   display: flex;
-  flex-shrink: 0;
   align-items: center;
-  margin-right: 0;
-  padding: 10px 0;
-  word-break: break-word;
-  z-index: 1;
-  transition: all 0.3s;
+  gap: 0.75rem;
+  margin-right: auto;
+  font-weight: 600;
+  color: #593269;
 }
-.site-nav .navbar-brand span,
-.site-nav .navbar-brand .navbar-caption-wrap {
-  display: flex;
-}
-.site-nav .navbar-logo {
-  margin: 0 !important;
-  padding-left: 2rem;
-}
-.site-nav .navbar-brand img {
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 0 !important;
-}
-.site-nav .navbar-brand .navbar-logo img {
-  display: flex;
+.site-nav .nav-brand img {
   width: auto;
-}
-/* Beats the navbar-dropdown plugin's 50px logo and its scrolled-state 2rem; the phone rule below is
-   !important and still applies. */
-.site-nav .navbar.navbar-dropdown .navbar-logo img {
   height: 3rem;
-}
-.site-nav .navbar-caption {
-  padding-left: 1rem;
-  padding-right: 0.5rem;
-}
-.site-nav .navbar-brand .navbar-caption {
-  line-height: inherit !important;
+  border-radius: 0 !important; /* base.css rounds every image */
 }
 
 /* ---- Page links ---- */
-.navbar-collapse {
-  flex-basis: 100%;
-  flex-grow: 1;
-  align-items: center;
-}
-.site-nav .navbar .navbar-collapse {
-  justify-content: flex-end;
-  z-index: 1;
-}
-.site-nav .navbar-nav {
-  margin: auto;
-}
-.site-nav ul.navbar-nav {
-  flex-wrap: wrap;
-}
-.site-nav .navbar-nav .nav-item {
-  padding: 0 !important;
-  transition: 0.3s all !important;
-}
 .site-nav .nav-link {
-  position: relative;
-  width: fit-content;
+  border-radius: 1rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  transition: background-color 0.3s;
 }
-.site-nav a.nav-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.site-nav .navbar-nav .nav-item .nav-link {
-  margin: 0 !important;
-  padding: 16px !important;
-  border-radius: 1rem !important;
-  transition: 0.3s all !important;
-}
-.site-nav .navbar-nav .nav-item .nav-link:hover {
+.site-nav .nav-link:hover {
   background-color: rgba(27, 31, 10, 0.06);
 }
-.site-nav .nav-item:focus,
-.site-nav .nav-link:focus {
-  outline: none;
+/* The current page (aria-current, set in the markup). */
+.site-nav .nav-link[aria-current],
+.site-nav .dropdown-item[aria-current] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
 }
 
 /* ---- "Members" dropdown ---- */
-/* The caret after "Members"; it flips while the dropdown is open. */
-.site-nav .nav-dropdown .link.dropdown-toggle::after {
-  margin-left: 0.5rem;
-  margin-top: 0.2rem;
-  transition: 0.3s all;
-}
-.site-nav .navbar-nav .open .nav-link::after {
-  transform: rotate(180deg);
-}
 .site-nav .dropdown-menu {
-  flex-direction: column;
-  flex-wrap: wrap;
-  min-width: auto;
-  max-width: 100%;
-  padding: 12px 4px !important;
-  border-radius: 1.5rem;
-  background: rgba(255, 255, 255, 0.8) !important;
-  transition: 0.3s all !important;
-}
-/* Desktop: a floating panel centered under "Members". */
-.site-nav .navbar .dropdown > .dropdown-menu {
-  display: none;
-  top: calc(100% + 20px);
-  left: 50%;
-  width: max-content;
-  max-width: 500px !important;
-  transform: translateX(-50%);
-}
-.site-nav .navbar .dropdown.open > .dropdown-menu {
-  display: flex;
-}
-.site-nav .navbar-nav .dropdown-item {
-  margin: 0 8px !important;
-  padding: 12px !important;
-  border-radius: 0.5rem !important;
-  transition: 0.3s all !important;
-}
-.site-nav .navbar-nav .dropdown-item:hover {
-  background-color: rgba(27, 31, 10, 0.06);
-}
-.site-nav .dropdown .dropdown-menu .dropdown-item {
-  width: auto;
-}
-.site-nav .navbar .dropdown > .dropdown-menu .dropdown-item {
-  line-height: 1 !important;
-}
-.site-nav .dropdown .dropdown-menu .dropdown-item::after {
-  right: 0.5rem;
-}
-.site-nav .dropdown-item.active,
-.site-nav .dropdown-item:active {
-  background-color: transparent;
+  --bs-dropdown-bg: #fffbe1; /* the bar's color over the yellow page, but opaque */
+  --bs-dropdown-border-width: 0;
+  --bs-dropdown-border-radius: 1.5rem;
+  --bs-dropdown-padding-x: 0.5rem;
+  --bs-dropdown-padding-y: 0.5rem;
+  --bs-dropdown-link-color: #593269;
+  --bs-dropdown-link-hover-color: #593269;
+  --bs-dropdown-link-hover-bg: rgba(27, 31, 10, 0.06);
+  --bs-dropdown-link-active-color: #593269;
+  --bs-dropdown-link-active-bg: rgba(27, 31, 10, 0.1);
+  --bs-dropdown-item-padding-y: 0.75rem;
+  --bs-dropdown-item-border-radius: 0.75rem;
+  box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.12);
 }
 
 /* ---- Social icons ---- */
 .site-nav .nav-social {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  padding: 0.3rem 1rem 0;
-  text-align: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .site-nav .nav-social-link {
-  padding-right: 0.5rem;
+  display: block;
+  padding: 0.5rem;
   font-size: 1.5rem;
-  color: #593269 !important;
+  color: #593269;
 }
-/* The icon glyphs fill their em box edge to edge, so at 24px they looked undersized next to the logo. */
-.nav-social-link .social-icon > svg {
+.site-nav .nav-social-link svg {
+  display: block;
   width: 1.25em;
   height: 1.25em;
+  fill: currentColor;
 }
 
-/* ---- Hamburger button (below 992px; Bootstrap hides it on wider screens) ---- */
+/* ---- Hamburger: three bars that turn into an X while the menu is open ---- */
 .site-nav .navbar-toggler {
+  padding: 0.5rem;
+  border: 0;
+}
+.site-nav .hamburger {
   position: relative;
-  order: 1000;
-  align-self: center;
-  width: 31px;
-  height: 20px;
-  margin-left: 12px;
-  margin-right: 8px;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-  background: transparent;
-  font-size: 1.25rem;
-  line-height: 1;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.site-nav .navbar-toggler:focus,
-.site-nav .navbar-toggler:hover {
-  text-decoration: none;
-  box-shadow: none;
-}
-/* The hamburger is a <span> (a <div> isn't allowed inside <button>); keep it a block box. */
-.navbar-toggler .hamburger {
   display: block;
+  width: 28px;
+  height: 18px;
 }
-/* Four bars: the middle two overlap. Opening the menu hides the outer two and turns the middle two
-   into an X. */
-.site-nav .navbar-toggler .hamburger span {
+.site-nav .hamburger span {
   position: absolute;
-  right: 0;
-  width: 30px;
+  left: 0;
+  width: 100%;
   height: 2px;
+  border-radius: 1px;
   background-color: #593269;
+  transition: transform 0.2s, opacity 0.2s;
 }
-.site-nav .navbar-toggler .hamburger span:nth-child(1) {
-  top: 0;
-  transition: all 0.2s;
-}
-.site-nav .navbar-toggler .hamburger span:nth-child(2),
-.site-nav .navbar-toggler .hamburger span:nth-child(3) {
-  top: 8px;
-  transition: all 0.15s;
-}
-.site-nav .navbar-toggler .hamburger span:nth-child(4) {
-  top: 16px;
-  transition: all 0.2s;
-}
-.site-nav nav.opened .hamburger span:nth-child(1),
-.site-nav nav.opened .hamburger span:nth-child(4) {
-  top: 8px;
-  right: 50%;
-  width: 0;
-  opacity: 0;
-  transition: all 0.2s;
-}
-.site-nav nav.opened .hamburger span:nth-child(2) {
-  transform: rotate(45deg);
-  transition: all 0.25s;
-}
-.site-nav nav.opened .hamburger span:nth-child(3) {
-  transform: rotate(-45deg);
-  transition: all 0.25s;
-}
+.site-nav .hamburger span:nth-child(1) { top: 0; }
+.site-nav .hamburger span:nth-child(2) { top: 8px; }
+.site-nav .hamburger span:nth-child(3) { top: 16px; }
+.site-nav .navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.site-nav .navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(2) { opacity: 0; }
+.site-nav .navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-/* ---- Responsive ---- */
-@media (max-width: 992px) {
-  .site-nav .container {
-    padding-right: 2rem;
-  }
-  .site-nav .nav-social {
-    justify-content: flex-start;
-    margin-bottom: 0.5rem;
-  }
-}
-/* Below 992px: links fold into a frosted panel that drops down under the bar. */
-@media (max-width: 991px) {
-  .site-nav .navbar-brand {
-    margin-right: auto;
-  }
-  .site-nav .navbar .navbar-brand {
-    flex-shrink: initial;
-    flex-basis: auto;
-    padding-right: 10px;
-    word-break: break-word;
-  }
-  .site-nav .navbar .navbar-toggler {
-    flex-basis: auto;
-  }
+/* ---- Below 1200px: the menu is a panel that drops down under the bar ---- */
+@media (max-width: 1199.98px) {
   .site-nav .navbar-collapse {
     position: absolute;
-    top: 110%;
+    top: calc(100% + 0.5rem);
     left: 0;
-    z-index: -1 !important;
-    width: 100%;
-    max-height: 93.5vh;
+    right: 0;
+    max-height: calc(100svh - var(--nav-bottom) - 1rem);
+    overflow-y: auto;
     padding: 1rem;
-    border-color: rgba(255, 255, 255, 0.8) !important;
     border-radius: 1.5rem;
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(8px);
-    opacity: 1;
+    /* Opaque: page headings showed through a translucent panel, and backdrop-filter can't blur
+       here (the bar's own blur makes it the backdrop root). Same tint as the bar over yellow. */
+    background: #fffbe1;
+    box-shadow: 0 30px 60px 0 rgba(27, 31, 10, 0.12);
   }
-  .site-nav .navbar-collapse.show {
-    overflow: auto;
+  /* Inside the panel the dropdown opens inline, as a tinted box. */
+  .site-nav .dropdown-menu {
+    --bs-dropdown-bg: rgba(27, 31, 10, 0.04);
+    margin: 0.25rem 0;
+    box-shadow: none;
   }
-  .site-nav .navbar .nav-item .nav-link::before {
-    display: none;
-  }
-  .site-nav .navbar-nav .nav-item .nav-link::after {
-    margin-left: 10px;
-  }
-  .site-nav .navbar .nav-social {
-    padding-left: 0;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-  /* The dropdown opens inline, as a tinted box inside the menu. */
-  .site-nav .navbar.opened .dropdown-menu {
-    top: 0;
-  }
-  .site-nav .navbar .dropdown > .dropdown-menu {
-    top: 10px;
-    left: 0;
-    max-width: 100% !important;
-    padding: 8px !important;
-    border-radius: 1rem;
-    background-color: rgba(27, 31, 10, 0.04) !important;
-    transform: translateX(0);
-  }
-  .site-nav .navbar .dropdown.open > .dropdown-menu {
-    display: flex !important;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .site-nav .navbar .dropdown-menu .dropdown-item {
-    padding: 0.25rem 1.5rem !important;
-    text-align: center;
-  }
-  .site-nav .navbar .dropdown > .dropdown-menu .dropdown-item {
-    margin-bottom: 4px !important;
-    padding: 8px !important;
-    line-height: 1 !important;
-  }
-  .site-nav .navbar .dropdown-menu .dropdown-item::after {
-    right: auto;
+  .site-nav .nav-social {
+    margin-top: 0.5rem;
   }
 }
 @media (max-width: 767px) {
-  .site-nav .container {
-    width: 95%;
-    height: 56px !important;
-    margin-top: 0;
-    padding-right: 1rem;
-  }
   .site-nav .navbar {
-    min-height: 72px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
-  .site-nav .navbar-logo {
+  .site-nav .nav-bar {
     padding-left: 1rem;
+    padding-right: 0.5rem;
   }
-  .site-nav .navbar .navbar-logo img {
-    height: 2rem !important;
-  }
-  .site-nav .navbar-toggler {
-    transform: scale(0.8);
-  }
-  .site-nav .navbar-collapse {
-    max-height: 80vh;
-  }
-  .site-nav .nav-dropdown {
-    padding-bottom: 0.5rem;
+  .site-nav .nav-brand img {
+    height: 2rem;
   }
 }
-@media (min-width: 992px) {
+/* ---- 1200px and up: everything in the bar ---- */
+@media (min-width: 1200px) {
   .site-nav .navbar-nav {
-    padding-left: 1.5rem;
+    margin: 0 auto;
   }
-  .site-nav .navbar-nav.nav-dropdown {
-    display: flex;
+  /* A floating panel centered under "Members"; it also opens on hover where there's a mouse. */
+  .site-nav .dropdown-menu {
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
   }
-  /* An invisible bridge under "Members" so the pointer can cross the gap to the open dropdown. */
-  .site-nav .navbar-nav .open .nav-link::before {
-    content: "";
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    height: 20px;
-    background: transparent;
+}
+@media (min-width: 1200px) and (hover: hover) {
+  .site-nav .dropdown:hover > .dropdown-menu {
+    display: block;
   }
 }

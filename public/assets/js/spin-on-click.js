@@ -1,5 +1,5 @@
 // Special webmaster card :P Clicking an element with class "spin-on-click" spins it once; clicking
-// again restarts the spin. The animation lives in css/overrides.css (and is off for reduced motion).
+// again restarts the spin. The animation lives in css/base.css (and is off for reduced motion).
 document.querySelectorAll('.spin-on-click').forEach((el) => {
   el.addEventListener('click', () => {
     el.classList.remove('spinning');

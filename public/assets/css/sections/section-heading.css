@@ -4,7 +4,7 @@
  * sections below it).
  */
 .section-heading:where(.section-heading--page-title) {
-  padding-top: 10rem;
+  padding-top: var(--page-top);
   padding-bottom: 3rem;
   background-color: #ffeb69;
 }

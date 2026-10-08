@@ -2,16 +2,14 @@
  * Hero (home and about pages): a photo beside a title, text, and button. `hero--image-right` puts
  * the photo on the right.
  *
- * The hero fills the first screen, so the footer starts below the fold. --nav-bottom is where the
- * fixed navbar ends (site-nav.css: a 90px bar 16px down, or 72px flush on phones); the content starts
- * one gap below it.
+ * The hero fills the first screen, so the footer starts below the fold. --nav-bottom (base.css) is
+ * where the fixed navbar ends; the content starts one gap below it.
  * - Side by side (992px+): content is centered, with the bottom padding equal to the gap, so the photo
  *   sits midway between the navbar and the fold.
  * - Stacked (below 992px): content starts at the top with small gaps, so the photo hugs the navbar and
  *   the text follows right under it.
  */
 .hero {
-  --nav-bottom: 106px;
   --hero-gap: 1rem;
   min-height: 100vh;
   min-height: 100svh;
@@ -25,7 +23,7 @@
   align-items: center;
   row-gap: var(--hero-gap);
 }
-/* The group photo's 1.9:1 original has empty classroom at the sides, so it is cropped there (never
+/* The home page's group photo: its 1.9:1 original has empty classroom at the sides, so it is cropped there (never
    stretched: object-fit) to 7:5, the narrowest crop that keeps everyone in frame, which makes it
    taller. Its height is capped to the screen minus the navbar and gaps, so short or ultrawide windows
    crop instead of pushing it off screen. */
@@ -46,16 +44,19 @@
 .hero:where(.hero--image-right) .row {
   flex-direction: row-reverse;
 }
+/* The about page's photo is portrait, with people at the top and bottom, so it is shown whole:
+   scaled to fit the column and the screen height, never cropped. */
+.hero:where(.hero--image-right) .image-wrapper img {
+  aspect-ratio: auto;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+}
 
 @media (max-width: 991px) {
   .hero .image-wrapper {
     padding: 0 1rem;
     margin-bottom: 0;
-  }
-}
-@media (max-width: 767px) {
-  .hero {
-    --nav-bottom: 72px;
   }
 }
 @media (min-width: 992px) {
