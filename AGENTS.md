@@ -127,6 +127,6 @@ Rule of thumb: bump by **regression risk**. If the change could alter the deploy
 - The roster check's override is the `workflow_dispatch` "Approve roster removal" action: officer allowlist in the repository variable `ROSTER_OFFICERS` (settings, not a file), which sets a success status on the PR's head SHA. It's invalidated by new commits and leaves only an Actions run log that expires.
 
 ## Don't
-- Don't push, deploy, or apply manifests to a real cluster unless the human explicitly asks.
+- **Push your feature branch when a request is done**, without asking: every push gets a Cloudflare preview build, so the human can check the change while reviewing. Never push to `main` or force-push, and don't open or merge PRs, deploy, or apply manifests to a real cluster unless the human asks.
 - Don't change `.gitignore`, CI workflows, ESLint/TS config, or Kustomize base without saying so in your summary.
 - Don't implement items marked **on hold** in the project log (e.g. rendering the archived Beeble handbook).
