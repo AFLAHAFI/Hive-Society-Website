@@ -129,4 +129,4 @@ Rule of thumb: bump by **regression risk**. If the change could alter the deploy
 ## Don't
 - Don't push, deploy, or apply manifests to a real cluster unless the human explicitly asks.
 - Don't change `.gitignore`, CI workflows, ESLint/TS config, or Kustomize base without saying so in your summary.
-- Don't implement items marked **on hold** in the project log (e.g. Beeble rendering).
+- Don't implement items marked **on hold** in the project log (e.g. rendering the archived Beeble handbook).

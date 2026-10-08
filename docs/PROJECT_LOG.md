@@ -7,6 +7,7 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-04 | **Beeble's site is dead; this repo is the source of truth for members and teams**, as YAML: `content/members/<firstname-lastname>.yaml` (name, class year, `active`/`alumni`, board role, committees, teams, quip, quip hidden) and `content/teams/<team-id>.yaml` (name, type, formed, photo/logo; colors stay in `theme.yaml`). Built with the Astro migration (content collections + schema), not before. Shows stay in the Google Calendar | Beeble's maintainer stopped responding and mirth.cc/beeble is down: it lived on one person's account and domain. Data must be org-owned, in git, editable by several officers, and checked in CI. One file per member = no edit conflicts, and the id matches the portrait name. Status has no "removed" value (roster privacy) |
 | 2026-10-04 | Repository home: the **Hive-Society-Improv** GitHub org (`Hive-Society-Improv/Hive-Society-Website`); container images at `ghcr.io/hive-society-improv/hive-site` | Officers own it, not one member's account; CI, previews, CMS, and GHCR hang off it |
 | 2026-10-03 | **Hosting: Cloudflare Workers static assets** (`wrangler.jsonc`), built from GitHub by Workers Builds, replacing the hand-uploaded Pages project. Node version pinned in `.nvmrc`. Local server redirects clean URLs with 307 to match. Previews on, behind Cloudflare Access (officers). `workers.dev` address kept on (2026-10-04) as a stable link to the latest `main`; the canonical tags keep it out of search | Cloudflare's direction for new projects (Astro 6 targets it); static asset requests are free; same `_redirects`/`_headers`/`404.html` behavior, verified with `wrangler dev` |
 | 2026-09-23 | Calendar: source is the revived shows-only **"Hive Shows - Website Calendar"**; page shows a **month grid with an upcoming-shows list under it**; each show shows its Google Calendar **description** and its own **add-to-calendar** link; homepage features the **next show** (falls back to "Come See Us!"). Freshness: up to a week is acceptable, so a **daily scheduled rebuild** is plenty (no visitor-side JavaScript needed). **Build deferred** | User answers to calendar questions; a live API would be overkill for the required freshness |
@@ -27,15 +28,14 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 | 2026-09-23 | Theme colors live in `content/theme.yaml` with **semantic, per-component keys and literal hex values**. No palette names, no CSS selectors, no cross-references | Editors otherwise default to generic colors instead of designing a palette for the site. Duplicated values are fine so components can diverge later |
 | 2026-09-23 | Theme and content are stored **in git** (YAML), not in a runtime KV store or database | History, rollback, PR previews, and CI checks (contrast) on every edit; no server dependency |
 | 2026-09-23 | CMS: **Sveltia CMS** (git-based, Decap-compatible config), tentative | Form UI for non-coders, color widget, editorial workflow turns edits into PRs, runs entirely in the browser |
-| 2026-09-23 | **Proposed, pending managers:** Beeble is the source of truth for members & teams as *structured YAML* (not prose) that both Beeble and the site render; Beeble moves into this repo as `handbook/` (monorepo) so one CMS/CI covers both | Managers want Beeble as SoT; a monorepo avoids cross-repo sync and a second CMS/auth |
-| 2026-09-23 | Beeble stays a separate site for now (https://mirth.cc/beeble/, repo `lumirth/beeble`, mdBook) | Deferred; see TODO |
+| 2026-09-23 | ~~**Proposed, pending managers:** Beeble is the source of truth for members & teams as *structured YAML* (not prose) that both Beeble and the site render; Beeble moves into this repo as `handbook/` (monorepo) so one CMS/CI covers both~~ *(superseded 2026-10-04: Beeble's site died)* | Managers want Beeble as SoT; a monorepo avoids cross-repo sync and a second CMS/auth |
+| 2026-09-23 | ~~Beeble stays a separate site for now (https://mirth.cc/beeble/, repo `lumirth/beeble`, mdBook)~~ *(superseded 2026-10-04: Beeble's site died)* | Deferred; see TODO |
 | 2026-09-23 | Hosting: k3s in prod and k3d locally; Kustomize base + overlays; Cloudflare Tunnel for ingress; images on GHCR | Portability across self-hosting, DO Droplets, and DOKS with minimal changes |
 | 2026-09-23 | Static export (`npm run export` → `dist/`) is the interim deploy for Cloudflare Pages | The site is fully static today |
 
 ## TODO
 
 ### Decisions needed
-- [ ] Members data location: `content/members/` now, or wait for the Beeble/`handbook/` decision.
 - [ ] Content PR policy: auto-merge on green checks vs require one approval.
 - [ ] **Officers:** should "Hive Society 2025 Official Calendar!" stay public? Audited 2026-09-23: it mixes shows with internal events (meetings, socials at "Hive House", "Survivor Night", a constitution meeting, trips, tentative dates); titles/dates only, no descriptions, attendees, or residential addresses. It's discoverable because Indify's public widget config exposes all three connected calendar IDs plus the account address. Unlisting steps: secret iCal link or Google Group.
 
@@ -83,20 +83,13 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 
 - [ ] **Aux Board section** (decided 2026-09-24: removed from member cards; give it its own section under Alumni, e.g. columns of committees with names, no photos). Roster as of Fall '26: Merch & Design: Katie Johnson, Tess O'Brien, Jonathan Ocampo, Aarush Sinha · AKA Rep: Ari Warner · Diversity Chair: Ari Warner, Neha Samuel · Webmaster: Usman Faridi, Max Wanger, Colin Crook · Historian: Neha Samuel · Alumni Relations Rep: Uma Ramesh, Ari Warner · Big Little: Daniel Shafiabady, Connor Altan · Videography: Ryan Berri, Connor Altan, Daniel Shafiabady, Miette Thompson, Usman Faridi, Katie Johnson, Aarush Sinha · Curtis Orchard Trip: Tess O'Brien · Improv Olympics Coordinators: Ryan Berri, Aarush Sinha.
 
-### Beeble
-- [ ] Confirm with managers: Beeble as SoT via structured data + monorepo (see decision above).
-- [ ] Import `lumirth/beeble` history into `handbook/` (`git subtree add` or `git filter-repo`); archive the old repo with a pointer.
-- [ ] Define member/team schema (`handbook/data/members/*.yaml`, `handbook/data/teams/*.yaml`); seed from the current site's members/teams pages.
-- [ ] Generate Beeble roster/team pages from that data (preprocessor or pre-build script) so the handbook and the site never disagree.
-- [ ] CMS collections for members/teams pointing at `handbook/data/`.
-- [ ] Keep the handbook deploy at its own URL (decide: keep `mirth.cc/beeble/` or move to e.g. `handbook.hivesocietyimprov.com`).
-- [ ] **On hold:** render Beeble's handbook prose as `/handbook` on this site.
-- [ ] *If the monorepo is rejected:* transfer `lumirth/beeble` to the Hive org instead (keeps history and redirects), give it its own CMS instance, and have this site fetch its data at build time.
-- [ ] Fix its deploy workflow: installs mdBook via rustup on cache miss; `actions/cache@v3` is deprecated.
-
+### Beeble (old site dead 2026-10-04; archived; future undecided, likely revived)
+- [ ] **Decide the handbook's future** (likely revive it, sturdier). Requirements: owned by the org, several editors, survives any one person leaving, free hosting. Options weighed 2026-10-04: **Starlight** (Astro's docs framework: same stack, CI, and Cloudflare hosting as this site; Markdown + the same CMS; recommended), keep **mdBook** but in the org fork with org-owned hosting (smallest change), **MediaWiki** (a real wiki, but it needs a PHP server and database to patch and back up, the opposite of sturdy for a student club; hosted wikis bring back the one-account problem). Could also hold the show archive.
+- [ ] Decide whether to republish the handbook prose (set descriptions, foreword, intro) here. Its repo has **no license**, so the author still holds the copyright: try once more to reach Lukas Unguraitis first. The archive is the org fork `Hive-Society-Improv/beeble`.
+- [ ] **On hold:** render the handbook prose as `/handbook` on this site (only after the decision above).
 ### Astro migration (on hold)
 - [ ] Scaffold Astro (TypeScript strict) alongside the current site; port layout (nav/footer) and one page first to validate the approach.
-- [ ] Content collections + schemas: members, teams, events; theme.yaml → CSS custom properties; site.yaml → settings.
+- [ ] Content collections + schemas: members and teams as YAML in `content/members/`, `content/teams/` (layout in the 2026-10-04 decision; seed them from the current members/teams pages), events from the Google Calendar; theme.yaml → CSS custom properties; site.yaml → settings.
 - [ ] Port pages; retire `public/` Mobirise pages, `src/render.mts` fingerprinting, and `overrides.css`.
 - [ ] Keep the Node server path via `@astrojs/node` only if a dynamic feature needs it.
 - [ ] Add **Lighthouse CI** (`@lhci/cli`) with the migration: SEO, accessibility, and performance score thresholds on the built pages. Deferred until then because the page structure is being rebuilt anyway; `tests/seo.test.mts` covers the SEO basics meanwhile.
@@ -124,6 +117,7 @@ Prefer an existing, maintained package over our own code where it fits. Versions
 - [ ] Create the Cloudflare Tunnel and the `cloudflared-token` Secret.
 
 ## Done
+- 2026-10-04: Beeble archived as the org fork `Hive-Society-Improv/beeble` (original `lumirth/beeble`; mirth.cc/beeble is down and the maintainer isn't responding).
 - 2026-10-04: `workers_dev` back on: `hive-society-website.hivesocietyimprovuiuc.workers.dev` is a stable public link to the latest `main` (Access covers previews only; canonical tags point search at the real domain).
 - 2026-10-04: Homepage hero fills the first screen (footer below the fold), photo cropped at the sides to 7:5 (everyone still in frame) and as tall as the screen allows, never stretched; more spacing. No rubber-band overscroll (`overscroll-behavior`). Member cards: photo → name 8 px, name → year 4 px. Copyright year filled at build (`data-current-year`). Rainbow on Kyle's quip.
 - 2026-10-04: PRs labeled automatically by type (`type: content`, `type: fix`, …, plus `breaking`) from the title, reading the allowed types from `pr-title.yml`; filter with `label:"type: …"`.

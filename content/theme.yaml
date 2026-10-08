@@ -54,7 +54,7 @@ footer:
   social-icon-background: "#ffeb69"
   social-icon-hover-background: "#ffffff"
 
-# One entry per team. `id` must match the team's id in the team data (planned: Beeble),
+# One entry per team. `id` must match the team's id in the team data (planned: content/teams/),
 # so colors attach to the right team. To add a team: copy an entry, change `id`, pick colors.
 teams:
   - id: open-mic-surgery

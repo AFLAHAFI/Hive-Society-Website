@@ -46,7 +46,7 @@ Theme palette (from `mbr-additional.css`): purple `#593269` (text/brand), yellow
 
 | Area | Today | Opportunity | Kind |
 |---|---|---|---|
-| **Members** | ~60 hand-written HTML blocks | One record per person: `name, slug, classYear, photo, bio, roles[], teams[], status`. The page is rendered from the data | Data (Beeble/YAML) |
+| **Members** | ~60 hand-written HTML blocks | One record per person: `name, slug, classYear, photo, bio, roles[], teams[], status`. The page is rendered from the data | Data (YAML) |
 | **Alumni** | Hand-moved list | **Derived**: `classYear < current academic year` (or `status: alumni`), so nobody has to move people each May | Derived |
 | **Exec board** | Separate hand-written section | Derived from `roles[]`. Ordering by role is config | Derived |
 | **Teams** | Prose history plus "(L to R)" captions | `Team { kind: newbee\|core\|elective\|dispersed, formed, mergedFrom[], photo, roster[] }`. Enables team↔member links, a lineage timeline, and "currently on" badges on member cards | Data + relations |
@@ -99,6 +99,8 @@ The rule that makes this work is that **templates contain no literal colors or c
 - **Theme:** derive a dark mode from the tokens (`prefers-color-scheme`). The purple and yellow palette inverts well.
 
 ## 6. Beeble (external data source)
+
+> **Site dead 2026-10-04.** The maintainer stopped responding and the site went down; whether to revive it (sturdier) is undecided. Members and teams now live as YAML in this repo (see the 2026-10-04 decision in `PROJECT_LOG.md`); the handbook is archived as the org fork `Hive-Society-Improv/beeble`. The rest of this section is the original assessment.
 
 *Updated 2026-09-23.* Beeble is **Hive's handbook, built with [mdBook](https://rust-lang.github.io/mdBook/)**: Markdown in git (`lumirth/beeble`, by Lukas Unguraitis), deployed with GitHub Pages to **https://mirth.cc/beeble/**. It has no API or database; the git repo *is* the data source. Most chapters are stubs, and its planned "Archive: Roster / Achievements / Shows" section is commented out.
 
