@@ -1,0 +1,71 @@
+# Who is on which improv team. Teams are listed oldest first: the members page's Active Members
+# are ordered by team (this order), then class year, then name (tests/members-order.test.mts).
+#
+# - members: each member's ID, which is their portrait's file name without .jpg
+#   (public/assets/images/members/<id>.jpg), e.g. tess-obrien.
+# - on-hiatus: members of this team taking a break. They stay on the members page as usual.
+# - Executive Board members are listed on their team too; the board itself is ordered by
+#   position, not team.
+# - Members not on any team here sort after everyone who is. Elective teams (e.g. UMIC) aren't
+#   listed: everyone on one is also on a main team.
+#
+# Teams rename about once a year: renaming one here is just editing its name and id.
+
+teams:
+  - id: unaccompanied-whiners
+    name: Unaccompanied Whiners
+    members:
+      - aaron-yock
+      - aarush-sinha
+      - ari-warner
+      - colin-crook
+      - jn-sowinski
+      - kyle-freeman
+      - lizzy-denneen
+      - luca-baron
+      - max-wanger
+      - miette-thompson
+      - nathan-blaim
+      - neha-samuel
+      - noah-adrian
+      - tess-obrien
+      - uma-ramesh
+      - usman-faridi
+    on-hiatus:
+      - jn-sowinski
+      - kyle-freeman
+      - luca-baron
+
+  - id: open-mic-surgery
+    name: Open Mic Surgery
+    members:
+      - aashi-shah
+      - connor-altan
+      - daniel-shafiabady
+      - henrikas-tatarunas
+      - ilykeya-murikurthy
+      - jonathan-ocampo
+      - kai-nelson-orr
+      - katie-johnson
+      - liam-talavera
+      - sai-gade
+
+  # The newest team. Rename it here once it has a name.
+  - id: newbee-2026
+    name: NewBee Team (2026)
+    members:
+      - atri-bhattacharjee
+      - daniel-nunez
+      - glen-romanovich
+      - greg-kasper
+      - justice-oh
+      - katie-sims
+      - kedzie-gatta
+      - mihika-samavedam
+      - natalia-restrepo
+      - quentin-ruffo
+      - ray-schomberg
+      - roselyn-deeley
+      - ryan-berri
+      - zay-hamilton
+      - ziv-avros

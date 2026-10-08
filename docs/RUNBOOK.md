@@ -50,7 +50,7 @@ public/ (pages) ─┼─► npm start           → local preview, http://local
 ```
 
 - **`public/`**: the site's pages (`*.html`) and `assets/`: `images/`, `css/` (the site's styles: `base.css` for the whole page, plus one file per kind of section in `css/sections/`, named after the section's class), and `vendor/` (third-party libraries such as Bootstrap, kept unmodified). (Being replaced by the Astro version; see [ARCHITECTURE.md](ARCHITECTURE.md).)
-- **`content/theme.yaml`**: every color on the site. **`content/site.yaml`**: settings that pages read (calendar, mailing-list form) and image limits.
+- **`content/theme.yaml`**: every color on the site. **`content/site.yaml`**: settings that pages read (calendar, mailing-list form) and image limits. **`content/teams.yaml`**: who's on which team, oldest team first; it sets the order of Active Members on the members page.
 - **`public/assets/images/members/`**: one portrait per member, `firstname-lastname.jpg` ([§6](#member-portraits)).
 - **`src/`**: the small Node server behind `npm start`, and the code that reads the YAML files.
 - **`scripts/`**: the export and the checks that CI runs.
@@ -286,7 +286,7 @@ Written with Node's built-in test runner (`node:test`, no extra framework). All 
 | `tests/site.test.mts` | `content/site.yaml` loads; mistakes are reported with the exact setting named; the "Add to Google Calendar" and Apple/Outlook links are built correctly |
 | `tests/forms.test.mts` | Reading a Google Form's questions, and detecting when a question was deleted/re-created or a new required one added. Uses a built-in sample, not the live form |
 | `tests/contrast.test.mts` | Contrast math (WCAG 2.1 ratios, 4.5:1 text, 3:1 large text and icons, see-through backgrounds), that every theme color is in a checked pair, and that the site's colors pass except for listed waivers (and no waiver is left over once fixed) |
-| `tests/members-order.test.mts` | The members page order is fixed by rule, so it never depends on who edited last: Executive Board by position rank, then seniority; Active Members and Alumni by seniority (graduation year, then last name, then first name; no year yet = last). An unranked board role fails the test |
+| `tests/members-order.test.mts` | The members page order is fixed by rule, so it never depends on who edited last: Executive Board by position rank, then seniority; Active Members by team (order in `content/teams.yaml`, oldest first; no team = last), then seniority; Alumni by seniority (graduation year, then last name, then first name; no year yet = last). An unranked board role fails the test. Also checks `teams.yaml`: unique team ids, each member on at most one team, every ID has a card on the page, hiatus IDs are on that team |
 | `tests/redirects.test.mts` | `public/_redirects` is well-formed, every old URL points at a page that exists, and no redirect hides a page that still exists |
 | `tests/theme.test.mts` | The color rules for `theme.yaml`: real hex values only, no color names or references, correct naming, valid team list |
 | `tests/images.test.mts` | Reading image dimensions, and the image rules: per-folder size limits, every class has limits, exceptions need a reason, no duplicates, no leftover exceptions, member portrait and team photo naming |
