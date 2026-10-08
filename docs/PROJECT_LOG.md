@@ -68,6 +68,8 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 - [ ] CODEOWNERS: `content/**` editors vs `src/**`, `kube/**`, `.github/**` developers.
 
 ### Site
+- [ ] **Active Members order: team, then class year, then name** (requested 2026-10-04). Teams by seniority (proposed: Mental Chillness, Twist & Trout, Open Mic Surgery; members without a known team after them). **Blocked:** the site has no rosters for the current teams; get them from officers. Implement as a `data-team` on each card plus a team order in `members-order.test.mts` (becomes the members' `teams` field in Astro).
+- [ ] **Show archive:** start recording past shows (title, date, team, venue, poster/photos), most recent first; e.g. Open Mic Surgery's Casino Night. Decide where it lives: a page here (data in `content/shows/`, rendered with Astro) or the revived handbook.
 - [ ] **Review the page descriptions by hand** (drafted 2026-10-03, the text under each page's link in search results and link previews): check facts and voice in each page's `<meta name="description">`. `tests/seo.test.mts` enforces only uniqueness and length.
 - [ ] **New members (Fall '26 roster):** every new member's quip is `hidden` until the set is final (11 are still placeholders: `grep -n "ALMOST FUNNY" public/members.html`). To publish, remove `hidden` from each quip, including the separate block holding Ziv's quip pictures. Photos marked "I think" by the sender (Quentin, Zay, Atri, Katie Sims) should be confirmed. `usman-faridi-1977.jpg` isn't used by any page; asked on #5 whether it replaces `usman-faridi.jpg`.
 - [ ] **Calendar page (on hold, decided 2026-09-23):** replaces Indify, which is blank today (its `checkedCalendars` is the account's private primary calendar; no events in any month, Sep 2023 → Sep 2026). Build-time from the shows calendar's ICS (parser must handle recurrence + timezones, e.g. `node-ical`). Month grid + upcoming-shows list under it; per show: title, date/time, venue, **description**, **add-to-calendar** link.
@@ -98,6 +100,7 @@ When a decision changes conventions, commands, or layout, update [AGENTS.md](../
 - [ ] Port pages; retire `public/` Mobirise pages, `src/render.mts` fingerprinting, and `overrides.css`.
 - [ ] Keep the Node server path via `@astrojs/node` only if a dynamic feature needs it.
 - [ ] Add **Lighthouse CI** (`@lhci/cli`) with the migration: SEO, accessibility, and performance score thresholds on the built pages. Deferred until then because the page structure is being rebuilt anyway; `tests/seo.test.mts` covers the SEO basics meanwhile.
+- [ ] Add **stylelint** + `stylelint-no-unsupported-browser-features` (doiuse) when the CSS is rewritten, so new CSS can't use features our visitors' browsers lack. Browsers: last 3 Chrome, Firefox, Safari, iOS, Edge, ChromeAndroid, Samsung, plus Firefox ESR (the `defaults` list flags Opera Mini/KaiOS for basics like `calc`: 270 warnings). Ignore `intrinsic-width`, `css-autofill`, `css-text-indent`: Firefox/Samsung are only "partial" on sub-features we don't use. Trial run on the current CSS (2026-10-06) found 9 warnings, all those false positives, so it isn't worth adding before the rewrite.
 
 ### Existing libraries for things we built (noted 2026-09-24; nothing replaced yet)
 Prefer an existing, maintained package over our own code where it fits. Versions checked on npm 2026-09-24. Many of these come free with Astro, so most swaps should happen *as part of* the migration rather than before it.
@@ -121,6 +124,7 @@ Prefer an existing, maintained package over our own code where it fits. Versions
 - [ ] Create the Cloudflare Tunnel and the `cloudflared-token` Secret.
 
 ## Done
+- 2026-10-04: Homepage hero fills the first screen (footer below the fold), photo cropped at the sides to 7:5 (everyone still in frame) and as tall as the screen allows, never stretched; more spacing. No rubber-band overscroll (`overscroll-behavior`). Member cards: photo → name 8 px, name → year 4 px. Copyright year filled at build (`data-current-year`). Rainbow on Kyle's quip.
 - 2026-10-04: PRs labeled automatically by type (`type: content`, `type: fix`, …, plus `breaking`) from the title, reading the allowed types from `pr-title.yml`; filter with `label:"type: …"`.
 - 2026-10-04: Node 26 everywhere: `.nvmrc`, CI (now reads `.nvmrc` via `node-version-file`), Cloudflare builds, and the container (#11). `engines` stays `>=24`, the oldest version that runs `.mts` without flags.
 - 2026-10-04: Ruleset **Protect main** (active, no bypass): PR required (0 approvals until the content-PR policy is decided), squash-only, required checks Lint, typecheck, test / Kubernetes manifests / Container image / Conventional PR title, no force-push or deletion. Repo settings: squash commit title = PR title; head branches deleted automatically after merge.

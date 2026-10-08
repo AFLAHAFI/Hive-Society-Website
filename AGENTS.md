@@ -55,7 +55,7 @@ src/site.mts           site.yaml loading/validation; named links (calendar-googl
 src/contrast.mts       WCAG contrast pairs + waivers for theme.yaml (run by validate:theme)
 src/images.mts         image policy (site.yaml → image-limits): per-class limits, exceptions, duplicates, folder naming rules
 src/forms.mts          Google Form structure parser + drift comparison
-src/render.mts         shared HTML transform (server + export): fills data-site-link hrefs; export adds ?v=<hash>, <link rel="canonical">, and og:title/description/url from the page's own title and description (never hand-write those)
+src/render.mts         shared HTML transform (server + export): fills data-site-link hrefs; fills <span data-current-year> (copyright); export adds ?v=<hash>, <link rel="canonical">, and og:title/description/url from the page's own title and description (never hand-write those)
 scripts/export.mts     public/ → dist/ + robots.txt, sitemap.xml, _headers
 wrangler.jsonc         Cloudflare deploy config: Workers static assets serving dist/ (no Worker code)
 .nvmrc                 Node version (26) for nvm, CI (`node-version-file`), and Cloudflare's build machine; the Dockerfile's `node:26-alpine` must match

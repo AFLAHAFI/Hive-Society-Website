@@ -6,7 +6,9 @@
  * 2. Asset fingerprints (export only): local `assets/…` references get `?v=<content hash>`. A changed file
  *    gets a new URL, so browsers fetch it immediately; unchanged files can be cached for a year. This is
  *    what makes a "disable caching" switch unnecessary.
- * 3. Canonical URL and link previews (export only): `<link rel="canonical">` naming the page's one real
+ * 3. Current year: `<span data-current-year>` (the footer's copyright) gets the year the page is built, so it
+ *    never goes stale as long as the site is rebuilt (every merge deploys).
+ * 4. Canonical URL and link previews (export only): `<link rel="canonical">` naming the page's one real
  *    address, so search engines fold workers.dev, preview, and `?utm_…` copies into it; plus `og:title`,
  *    `og:description`, and `og:url` copied from the page's own title, description, and that address, so
  *    shared links get a proper preview card without anyone keeping two copies in sync.
@@ -24,8 +26,11 @@ export interface RenderContext {
    * Omitted for the live server and the 404 page.
    */
   canonicalUrl?: string;
+  /** Year for `data-current-year`; defaults to the current year (tests pass a fixed one). */
+  year?: number;
 }
 
+const CURRENT_YEAR = /(<span\b[^>]*\bdata-current-year\b[^>]*>)[^<]*(<\/span>)/g;
 const TAG_WITH_SITE_LINK = /<a\b[^>]*\bdata-site-link="([^"]+)"[^>]*>/g;
 /** `assets/…` or root-absolute `/assets/…` (the 404 page uses absolute URLs: it's served at any depth). */
 const ASSET_ATTR = /\b(href|src)="(\/?)(assets\/[^"?#]+)(?:\?[^"#]*)?(#[^"]*)?"/g;
@@ -41,6 +46,9 @@ export function renderPage(html: string, ctx: RenderContext): string {
     const href = `href="${escapeAttr(ctx.links[name] ?? '')}"`;
     return /\bhref="[^"]*"/.test(tag) ? tag.replace(/\bhref="[^"]*"/, href) : tag.replace(/>$/, ` ${href}>`);
   });
+
+  const year = String(ctx.year ?? new Date().getFullYear());
+  out = out.replace(CURRENT_YEAR, (_whole: string, open: string, close: string) => `${open}${year}${close}`);
 
   const { assetVersion } = ctx;
   if (assetVersion) {

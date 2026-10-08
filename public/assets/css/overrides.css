@@ -115,10 +115,44 @@ section.embed-section .calendar-subscribe .btn {
 .member-grid .item-subtitle { line-height: 1.2; }
 .skip-link:focus { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 1100; width: max-content; padding: 0.5rem 1rem; }
 
-/* Homepage hero: on very wide screens the 8/12-column photo grows taller than the viewport. Cap it at
-   65vh and crop (centered) instead of letting the page open on nothing but photo. On 16:9 screens it
-   is already ~62vh, so the cap only engages on ultrawide or short windows. */
-section.hero .image-wrapper img { max-height: 65vh; object-fit: cover; }
+/* Homepage hero: fills the first screen, so the footer starts below the fold. The photo's 1.9:1
+   original has empty classroom at the sides, so it is cropped there (never stretched: object-fit) to
+   7:5, the narrowest crop that keeps everyone in frame, which makes it taller. Its height is capped to
+   the screen minus the navbar and gaps, so short or ultrawide windows crop instead of pushing it off screen.
+   --nav-bottom is where the fixed navbar ends (sections.css: a 90px bar 16px down, or 72px flush on
+   phones); the hero starts one gap below it.
+   - Side by side (992px+): content is centered, with the bottom padding equal to the gap, so the photo
+     sits midway between the navbar and the fold.
+   - Stacked (phones, tablets): content starts at the top with small gaps, so the photo hugs the navbar
+     and the text follows right under it. sections.css pads and margins the photo's column; dropped. */
+section.hero {
+  --nav-bottom: 106px;
+  --hero-gap: 1rem;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--nav-bottom) + var(--hero-gap));
+  padding-bottom: var(--hero-gap);
+}
+section.hero .row { row-gap: var(--hero-gap); }
+section.hero .image-wrapper img {
+  aspect-ratio: 7 / 5;
+  height: auto;
+  max-height: calc(100vh - var(--nav-bottom) - 2 * var(--hero-gap));
+  max-height: calc(100svh - var(--nav-bottom) - 2 * var(--hero-gap));
+  object-fit: cover;
+  object-position: center;
+}
+@media (max-width: 767px) {
+  section.hero { --nav-bottom: 72px; }
+}
+@media (max-width: 991px) {
+  section.hero .image-wrapper { padding-block: 0; margin-bottom: 0; }
+}
+@media (min-width: 992px) {
+  section.hero { --hero-gap: 1.5rem; justify-content: center; }
+}
 
 /* Moved out of inline style attributes (html-validate: no-inline-style). */
 /* Specificity (0,4,1) + loading last matches the old inline style: beats the plugin's 50px and the
@@ -156,7 +190,7 @@ section.hero .image-wrapper img { max-height: 65vh; object-fit: cover; }
 .member-grid .item-img img { aspect-ratio: 1; object-fit: cover; }
 .member-grid .item-img img[src$="portrait-placeholder.jpg"] { object-position: right center; }
 
-/* Special webmaster card :P animated rainbow text. People who ask their OS for reduced
+/* Animated rainbow text for quips :P (the webmaster card, Kyle's "Heterosexual"). People who ask their OS for reduced
    motion get the gradient without the animation. Every stop is darkened to at least 4.5:1 against
    the yellow page (pure yellow and green were ~1.1:1), so each letter stays readable. */
 .rainbow-text {
@@ -191,3 +225,6 @@ section.hero .image-wrapper img { max-height: 65vh; object-fit: cover; }
   vertical-align: middle;
   border-radius: 0 !important; /* the site-wide image rounding is !important */
 }
+
+/* No rubber-band overscroll: pulling past the top or bottom revealed a white canvas behind the page. */
+html, body { overscroll-behavior-y: none; }

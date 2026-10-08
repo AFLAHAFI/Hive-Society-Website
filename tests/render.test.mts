@@ -22,6 +22,19 @@ describe('renderPage: named links', () => {
   });
 });
 
+describe('renderPage: current year', () => {
+  it('fills data-current-year spans and leaves other text alone, idempotently', () => {
+    const html = '<p>© Copyright <span data-current-year>2025</span> Hive · since 2022</p>';
+    const once = renderPage(html, { links, year: 2031 });
+    assert.equal(once, '<p>© Copyright <span data-current-year>2031</span> Hive · since 2022</p>');
+    assert.equal(renderPage(once, { links, year: 2031 }), once);
+  });
+
+  it('defaults to the year it runs in', () => {
+    assert.match(renderPage('<span data-current-year>1999</span>', { links }), new RegExp(`>${String(new Date().getFullYear())}<`));
+  });
+});
+
 describe('renderPage: canonical URL and link previews', () => {
   const page = '<html><head><title>Hive &amp; "Co"</title><meta name="description" content="Shows &amp; more"></head><body></body></html>';
 
