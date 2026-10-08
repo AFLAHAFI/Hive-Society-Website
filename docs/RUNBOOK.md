@@ -244,14 +244,14 @@ Done once when the project is set up or handed to new owners. Tick each off in [
 1. Cloudflare dashboard → Workers & Pages → Create → **Import a repository** → install Cloudflare's GitHub app and grant it this repository → select it.
 2. Build command `npm ci && npm run export` (the export also runs from `wrangler.jsonc`, so a missing or ignored build command can't ship an empty site); deploy command `npx wrangler deploy`; non-production branch deploy command `npx wrangler preview` (the default; it needs the `previews` block in `wrangler.jsonc`. If the beta misbehaves, `npx wrangler versions upload` also works); production branch `main`; root directory blank. No `NODE_VERSION` needed: `.nvmrc` sets it.
 3. Settings → Domains & Routes → add the custom domain `hivesocietyimprov.com`. Then send `www` to it: Rules → Redirect Rules → template **Redirect from WWW to root**, target `https://hivesocietyimprov.com` (not `www`, or it loops).
-4. **Lock previews to officers.** Preview links show unmerged changes, so only officers should see them. `wrangler.jsonc` already turns previews on and the public `workers.dev` address off; the login is set up here:
+4. **Lock previews to officers.** Preview links show unmerged changes, so only officers should see them. `wrangler.jsonc` already turns previews on; the login is set up here:
    - Turn on Zero Trust if it isn't yet, choosing the **Free** plan: up to 50 people, and over that it refuses new logins instead of billing. Cloudflare may ask for a card; check Manage Account → Billing afterwards shows Zero Trust Free at $0.
    - The Worker → **Access** tab → **Protect this Worker behind Access** → **Previews only** (not "All traffic", which would put a login in front of the public site too) → pick a policy → **Apply Access**.
    - Then in Zero Trust → Access, edit that policy to **Include → Emails** with the officers' addresses, and use **One-time PIN** as the login method (Cloudflare emails a code; nothing else to set up). An email list is better than the "Cloudflare account" policy, which would mean making every officer a member of the Cloudflare account.
    - Set seat expiration (Zero Trust settings) so former officers free their seat.
    - Check: open a preview link in a private window. You should get a Cloudflare login page, not the site.
 5. Analytics & Logs → **Web Analytics** → enable for the domain (free, no cookies).
-6. Before moving the domain, check the new build on a PR's preview link (there's no `workers.dev` address to check instead). Once the new project serves the domain, delete the old Pages project.
+6. Before moving the domain, check the new build at the Worker's own address, `hive-society-website.<account>.workers.dev`, which always shows the latest `main`. Once the new project serves the domain, delete the old Pages project.
 
 **Google** (Hive Google account)
 - The **"Hive Shows - Website Calendar"** must stay **public**; its ID is in `content/site.yaml`.

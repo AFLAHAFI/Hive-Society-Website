@@ -6,8 +6,6 @@
   // Build dist/ before every deploy and preview, whatever the dashboard's build command says. Cloudflare
   // installs dependencies first (npm ci); locally, run `npm ci` once yourself.
   "build": { "command": "npm run export" },
-  // The live site exists only at hivesocietyimprov.com: no public copy at hive-society-website.<account>.workers.dev.
-  "workers_dev": false,
   // PR builds run `npx wrangler preview` (Worker Previews, open beta), which needs this block. Empty: a
   // static site has no bindings or variables for previews to override.
   "previews": {},
