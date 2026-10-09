@@ -13,7 +13,7 @@
  *    `og:description`, and `og:url` copied from the page's own title, description, and that address, so
  *    shared links get a proper preview card without anyone keeping two copies in sync.
  *
- * Interim: a template engine (see docs/PROJECT_LOG.md) replaces this when pages become templates.
+ * Interim: a template engine (the Astro migration, issue #29) replaces this when pages become templates.
  */
 
 export interface RenderContext {

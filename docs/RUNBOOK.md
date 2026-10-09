@@ -113,7 +113,7 @@ git push -u origin HEAD                              # then open a PR on GitHub
 
 - **The PR title matters.** It must start with a type like `fix:` or `content:` ([§5](#5-versions-and-releases)), and it decides the next version number. CI rejects other titles.
 - PRs are **squash-merged**: all the branch's commits become one commit on `main`, titled with the PR title.
-- If you changed a command, convention, or folder layout, update this runbook, [AGENTS.md](../AGENTS.md), and [PROJECT_LOG.md](PROJECT_LOG.md) in the same PR. If you changed what editors can do, update [EDITING.md](../EDITING.md).
+- If you changed a command, convention, or folder layout, update this runbook, [AGENTS.md](../AGENTS.md), and record any decision in [PROJECT_LOG.md](PROJECT_LOG.md) in the same PR. Put `Closes #N` in the PR body for issues it finishes. If you changed what editors can do, update [EDITING.md](../EDITING.md).
 
 ## 5. Versions and releases
 
@@ -140,7 +140,7 @@ The site has a version number like **`1.4.2`**, following [Semantic Versioning](
 
 The rule of thumb: **if a change could make the live site behave or look different, even by accident, it gets at least a patch**, so any problem can be traced to the release that introduced it. Tests, CI, docs, and formatting can't, so they don't release.
 
-**Releases** *(automation planned; see [PROJECT_LOG.md](PROJECT_LOG.md))*: a bot (release-please) keeps a "Release v1.5.0" PR open that collects merged changes into a changelog. Merging that PR creates the git tag `v1.5.0` and a GitHub Release with the notes, and publishes the matching container image. Until then there are no version tags.
+**Releases** *(automation planned: [#52](https://github.com/Hive-Society-Improv/Hive-Society-Website/issues/52))*: a bot (release-please) keeps a "Release v1.5.0" PR open that collects merged changes into a changelog. Merging that PR creates the git tag `v1.5.0` and a GitHub Release with the notes, and publishes the matching container image. Until then there are no version tags.
 
 ## 6. Images
 
@@ -226,7 +226,7 @@ The calendar page will be built from the shows Google Calendar when the site is 
 
 ## 8. One-time project setup
 
-Done once when the project is set up or handed to new owners. Tick each off in [PROJECT_LOG.md](PROJECT_LOG.md).
+Done once when the project is set up or handed to new owners. Steps still open are [issues labeled `area: infra`](https://github.com/Hive-Society-Improv/Hive-Society-Website/issues?q=is%3Aopen+label%3A%22area%3A+infra%22).
 
 **GitHub**
 1. Create the repository (public), push `main`, and make `main` the default branch (Settings → General). Dependabot opens its PRs against the default branch.
@@ -312,7 +312,7 @@ Written with Node's built-in test runner (`node:test`, no extra framework). All 
 
 ### Not covered yet
 
-Planned ([PROJECT_LOG.md](PROJECT_LOG.md)): browser tests on phone and desktop sizes (Playwright), accessibility checks (axe), screenshot comparison, performance and SEO scores (Lighthouse, with the Astro migration), a color-contrast check, and the roster check. Nothing tests the exported `dist/` folder directly yet.
+Planned ([issues labeled `area: ci`](https://github.com/Hive-Society-Improv/Hive-Society-Website/issues?q=is%3Aopen+label%3A%22area%3A+ci%22)): browser tests on phone and desktop sizes (Playwright), accessibility checks (axe), screenshot comparison, performance and SEO scores (Lighthouse, with the Astro migration), and the roster check. Nothing tests the exported `dist/` folder directly yet.
 
 Checked by hand only: the "Add to Google Calendar" button (needs a signed-in Google account).
 

@@ -1,0 +1,3 @@
+# Decisions are added as rows at the top of one table, so two branches often add rows at the
+# same spot. `union` keeps both sides' lines when merging locally (GitHub's web merge ignores it).
+docs/PROJECT_LOG.md merge=union

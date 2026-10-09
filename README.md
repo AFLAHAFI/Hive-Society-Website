@@ -59,7 +59,7 @@ Step by step: [RUNBOOK §4](docs/RUNBOOK.md#4-making-a-change).
 | [EDITING.md](EDITING.md) | Officers and editors | What you can change yourself, and who to ask for the rest |
 | [docs/RUNBOOK.md](docs/RUNBOOK.md) | Maintainers | Every command, deploy, and setup step, tests and CI, what to do when a check fails |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Contributors | The stack, why Astro, theme color rules, caching |
-| [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md) | Contributors | Decisions made and why (dated), open TODOs, and a log of finished work. Check it before starting something, since it may already be decided or on hold |
+| [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md) | Contributors | Decisions made and why, dated. Check it before starting something, since it may already be decided |
 | [docs/CONTAINERIZATION.md](docs/CONTAINERIZATION.md) | Self-hosting only | Optional Docker and Kubernetes deployment; the live site doesn't use it |
 | [docs/site-audit.md](docs/site-audit.md) | Background | The original site's content inventory, problems found, and the roadmap they led to |
 | [AGENTS.md](AGENTS.md) | AI coding agents | Conventions and rules agents must follow |
@@ -69,4 +69,4 @@ Step by step: [RUNBOOK §4](docs/RUNBOOK.md#4-making-a-change).
 - **Astro migration:** decided, currently on hold.
 - **Point-and-click editor** (Sveltia CMS) so officers can edit text, members, and colors without a developer.
 
-Everything else, and the status of each item: [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md).
+Everything else, and the status of each item: [GitHub issues](https://github.com/Hive-Society-Improv/Hive-Society-Website/issues) and [milestones](https://github.com/Hive-Society-Improv/Hive-Society-Website/milestones).

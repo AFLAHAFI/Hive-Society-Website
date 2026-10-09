@@ -50,7 +50,7 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
  * be temporary: fix the color, then delete the entry (a stale entry is reported).
  */
 export const CONTRAST_WAIVERS: Readonly<Partial<Record<string, string>>> = {
-  'links.text on page.background': 'Inherited from the Mobirise site; new link colors pending a design decision (docs/PROJECT_LOG.md → Theme)',
+  'links.text on page.background': 'Inherited from the Mobirise site; new link colors pending a design decision (issue #26)',
   'links.hover-text on page.background': 'Same as links.text',
 };
 
