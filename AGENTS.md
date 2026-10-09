@@ -5,7 +5,8 @@ Guidance for AI coding agents working in this repo. Humans: see [README.md](READ
 
 > **Keep this file current.** If your change makes anything here wrong or incomplete (commands, layout, conventions, decisions), update this file in the same change. A stale AGENTS.md misleads every later agent.
 > Also keep in sync, in the same change:
-> - [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md): tick TODOs you finish (move them to **Done** with the date), add TODOs you defer, record decisions.
+> - Open work lives in [GitHub issues](https://github.com/Hive-Society-Improv/Hive-Society-Website/issues) (`gh issue list`). Put `Closes #N` in the PR body for issues you finish; open an issue for work you defer (issue type Task/Bug/Feature, an `area: …` label, a milestone if one fits).
+> - [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md): record decisions (new rows at the top of the table).
 > - [docs/RUNBOOK.md](docs/RUNBOOK.md), the maintainer runbook (audience: a basic developer; explain *why* a step exists, not just the command): npm scripts, commands, deploys, setup, versions, tests, CI. A test fails if an npm script, test file, or PR-title type isn't in its tables; keep each test file's "what it guarantees" accurate. Container/Kubernetes material goes in [docs/CONTAINERIZATION.md](docs/CONTAINERIZATION.md), never the main runbook.
 > - [EDITING.md](EDITING.md), the non-coder guide: whenever what's editable, or how, changes. It's the only doc editors read.
 >   **Readers of EDITING.md do not like reading; content must be brief and avoid technical jargon. Assume website editors are lazy.**
@@ -13,7 +14,7 @@ Guidance for AI coding agents working in this repo. Humans: see [README.md](READ
 
 ## Project
 
-Website for Hive Society Improv (UIUC), https://hivesocietyimprov.com. Today it's the original Mobirise site in `public/` (cleaned up), served by a Node static server or exported to static files. **Decided: migrating to Astro** (content collections for members/teams/events, static output, islands for interactivity; see `docs/ARCHITECTURE.md`). Until the migration lands, keep changes to `public/` minimal; new page features belong in the Astro version. Read `docs/PROJECT_LOG.md` for current decisions and open work, and `docs/site-audit.md` for the content inventory and plans.
+Website for Hive Society Improv (UIUC), https://hivesocietyimprov.com. Today it's the original Mobirise site in `public/` (cleaned up), served by a Node static server or exported to static files. **Decided: migrating to Astro** (content collections for members/teams/events, static output, islands for interactivity; see `docs/ARCHITECTURE.md`). Until the migration lands, keep changes to `public/` minimal; new page features belong in the Astro version. Read `docs/PROJECT_LOG.md` for decisions, the GitHub issues for open work, and `docs/site-audit.md` for the content inventory and plans.
 
 ## Commands
 
@@ -64,7 +65,7 @@ scripts/validate-theme.mts   CLI used by CI
 tests/*.test.mts       node:test suites (server, theme, local link/asset check)
 .github/               ci.yml (required checks), pr-title.yml (allowed PR types: the one list), pr-labels.yml (labels PRs by type from it), dependabot.yml
 kube/base, kube/overlays/{local,prod}   Kustomize; prod = k3s + Cloudflare Tunnel
-docs/                  RUNBOOK.md (commands/procedures), ARCHITECTURE.md (stack, rationale, theme rules, caching), PROJECT_LOG.md (decisions + TODOs), site-audit.md
+docs/                  RUNBOOK.md (commands/procedures), ARCHITECTURE.md (stack, rationale, theme rules, caching), PROJECT_LOG.md (decisions), site-audit.md
 ```
 
 ## Conventions
@@ -95,7 +96,7 @@ docs/                  RUNBOOK.md (commands/procedures), ARCHITECTURE.md (stack,
 - **Page renames:** add the old URL (with and without `.html`) to `public/_redirects` so links elsewhere keep working; `tests/redirects.test.mts` checks targets exist.
 - **Members page order:** the Executive Board is sorted by position rank (Co-President, Vice President, Secretary, Treasurer, Membership Director; the `RANK` list in the test), then seniority. Active Members are sorted by team seniority (team order in `content/teams.yaml`, oldest first; members on no team after everyone on one), then seniority. Alumni are sorted by seniority. Seniority = graduation year (earliest first), then last name, then first name; members without a year yet (`Class of '??`) go last. Enforced by `tests/members-order.test.mts`, which also checks every ID in `teams.yaml` has a card. When someone joins, leaves, or switches teams, update `teams.yaml` in the same change. Team ids there aren't tied to `theme.yaml` (teams rename often). The Executive Board rows' layout modifiers (image side; extra space after the last row) belong to the position, not the person: when the order changes, move people between rows, don't move the rows.
 - **Member portraits:** `public/assets/images/members/<firstname-lastname>.jpg` (lowercase, hyphens, no nicknames/apostrophes/accents, `-2` for a duplicate name), `alt` = full name. Enforced by `check:images`. The base name is the member's future data ID. A member without a photo yet points at the shared `assets/images/portrait-placeholder.jpg` (never copy it per person; duplicate files fail the check).
-- **Team photos and logos:** `public/assets/images/teams/<team-id>.jpg` (`.png` for logos), `<team-id>` = the team's `id` in `content/theme.yaml` where it has one, otherwise the team name in kebab-case. `alt` = "<Team> team photo" / "<Team> logo". `check:images` enforces the format only; team names change about yearly, so don't add a check that names match `theme.yaml` or team data without a rename procedure (see PROJECT_LOG).
+- **Team photos and logos:** `public/assets/images/teams/<team-id>.jpg` (`.png` for logos), `<team-id>` = the team's `id` in `content/theme.yaml` where it has one, otherwise the team name in kebab-case. `alt` = "<Team> team photo" / "<Team> logo". `check:images` enforces the format only; team names change about yearly, so don't add a check that names match `theme.yaml` or team data without a rename procedure ([#35](https://github.com/Hive-Society-Improv/Hive-Society-Website/issues/35)).
 - **Image classes:** every image is limited by one `image-limits` section in `content/site.yaml`, chosen by folder (`portraits` = `members/`, `team-photos` = `teams/`, `other` = everything else). A new folder with its own rules = a new entry in `IMAGE_CLASSES` (`src/images.mts`) plus a matching section; all sections are required, unknown ones are rejected.
 - **Images committed to the repo:** enforced by `npm run check:images` (limits and exceptions in `content/site.yaml` → `image-limits`). JPEG, within the class limits in `image-limits` (currently 1080 px on the long edge for portraits, so any portrait can fill a large half-width card; 1200 px otherwise), quality ~82, progressive, metadata stripped; larger only via an exception with a reason. Use PNG only for logos or images that need transparency. Git history keeps every version of a file forever, so optimize *before* committing. Example: `convert in.png -auto-orient -resize '1200x1200>' -strip -quality 82 -interlace JPEG out.jpg`. Don't commit duplicate files; reference one shared file instead (e.g. every page's `og:image` is `assets/images/social-preview.png`, as an absolute URL).
 
@@ -130,4 +131,4 @@ Rule of thumb: bump by **regression risk**. If the change could alter the deploy
 ## Don't
 - **Push your feature branch when a request is done**, without asking: every push gets a Cloudflare preview build, so the human can check the change while reviewing. Never push to `main` or force-push, and don't open or merge PRs, deploy, or apply manifests to a real cluster unless the human asks.
 - Don't change `.gitignore`, CI workflows, ESLint/TS config, or Kustomize base without saying so in your summary.
-- Don't implement items marked **on hold** in the project log (e.g. rendering the archived Beeble handbook).
+- Don't implement issues labeled **on hold** (e.g. rendering the archived Beeble handbook, the Astro migration until it starts).

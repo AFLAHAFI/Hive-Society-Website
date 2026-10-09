@@ -1,6 +1,6 @@
 # Architecture
 
-How the site is built and why. For contributors. Commands and procedures are in [RUNBOOK.md](RUNBOOK.md); decisions and open work are in [PROJECT_LOG.md](PROJECT_LOG.md).
+How the site is built and why. For contributors. Commands and procedures are in [RUNBOOK.md](RUNBOOK.md); decisions are in [PROJECT_LOG.md](PROJECT_LOG.md), open work in [GitHub issues](https://github.com/Hive-Society-Improv/Hive-Society-Website/issues).
 
 **Contents:** [Stack](#stack) · [Why Astro](#why-astro) · [Theme](#theme) · [Caching](#caching)
 
